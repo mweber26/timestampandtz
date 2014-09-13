@@ -6,5 +6,5 @@ LIBINSTALL = $(shell /usr/local/pgsql/bin/pg_config  --pkglibdir)
 
 timestampandtz.so: timestampandtz.c Makefile
 	gcc -fpic -o timestampandtz.o -c timestampandtz.c $(INCLUDEDIRS)
-	gcc  -bundle -flat_namespace -undefined suppress -o timestampandtz.so timestampandtz.o $(LIBDIR) -lpq -lpgcommon -lpgport -lpgtypes
+	gcc -bundle -flat_namespace -undefined suppress -o timestampandtz.so timestampandtz.o $(LIBDIR) -lpq -lpgcommon -lpgport -lpgtypes
 	cp timestampandtz.so $(LIBINSTALL)
