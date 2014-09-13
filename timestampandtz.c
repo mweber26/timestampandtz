@@ -262,3 +262,17 @@ Datum timestampandtz_gt(PG_FUNCTION_ARGS)
 	TimestampAndTz *right = (TimestampAndTz *)PG_GETARG_POINTER(1);
 	PG_RETURN_BOOL(left->time < right->time);
 }
+
+PG_FUNCTION_INFO_V1(timestampandtz_to_timestamptz);
+Datum timestampandtz_to_timestamptz(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	PG_RETURN_TIMESTAMP(dt->time);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_to_timestamp);
+Datum timestampandtz_to_timestamp(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	PG_RETURN_TIMESTAMP(dt->time);
+}
