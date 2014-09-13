@@ -214,3 +214,51 @@ Datum timestampandtz_timezone(PG_FUNCTION_ARGS)
 
 	PG_RETURN_TIMESTAMP(result);
 }
+
+PG_FUNCTION_INFO_V1(timestampandtz_eq);
+Datum timestampandtz_eq(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *left = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	TimestampAndTz *right = (TimestampAndTz *)PG_GETARG_POINTER(1);
+	PG_RETURN_BOOL(left->time == right->time);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_ne);
+Datum timestampandtz_ne(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *left = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	TimestampAndTz *right = (TimestampAndTz *)PG_GETARG_POINTER(1);
+	PG_RETURN_BOOL(left->time != right->time);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_le);
+Datum timestampandtz_le(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *left = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	TimestampAndTz *right = (TimestampAndTz *)PG_GETARG_POINTER(1);
+	PG_RETURN_BOOL(left->time <= right->time);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_lt);
+Datum timestampandtz_lt(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *left = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	TimestampAndTz *right = (TimestampAndTz *)PG_GETARG_POINTER(1);
+	PG_RETURN_BOOL(left->time < right->time);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_ge);
+Datum timestampandtz_ge(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *left = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	TimestampAndTz *right = (TimestampAndTz *)PG_GETARG_POINTER(1);
+	PG_RETURN_BOOL(left->time >= right->time);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_gt);
+Datum timestampandtz_gt(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *left = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	TimestampAndTz *right = (TimestampAndTz *)PG_GETARG_POINTER(1);
+	PG_RETURN_BOOL(left->time < right->time);
+}
