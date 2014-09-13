@@ -276,3 +276,17 @@ Datum timestampandtz_to_timestamp(PG_FUNCTION_ARGS)
 	TimestampAndTz *dt = (TimestampAndTz *)PG_GETARG_POINTER(0);
 	PG_RETURN_TIMESTAMP(dt->time);
 }
+
+PG_FUNCTION_INFO_V1(timestampandtz_cmp);
+Datum timestampandtz_cmp(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz * left = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	TimestampAndTz * right = (TimestampAndTz *)PG_GETARG_POINTER(1);
+
+	if(left->time > right->time)
+		PG_RETURN_INT32(1);
+	else if(left->time < right->time)
+		PG_RETURN_INT32(-1);
+	else
+		PG_RETURN_INT32(0);
+}
