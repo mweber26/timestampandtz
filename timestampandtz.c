@@ -681,6 +681,28 @@ Datum timestampandtz_movetz(PG_FUNCTION_ARGS)
 	return gen_timestamp(dt->time, tzid);
 }
 
+PG_FUNCTION_INFO_V1(timestampandtz_mi);
+Datum timestampandtz_mi(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *left = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	TimestampAndTz *right = (TimestampAndTz *)PG_GETARG_POINTER(1);
+	Interval   *result;
+
+	result = (Interval *) palloc(sizeof(Interval));
+
+	if (TIMESTAMP_NOT_FINITE(left->time) || TIMESTAMP_NOT_FINITE(right->time) || left->tz == 0 || right->tz == 0)
+		ereport(ERROR,
+				(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
+				 errmsg("cannot subtract infinite timestamps")));
+
+	result->time = left->time - right->time;
+	result->month = 0;
+	result->day = 0;
+
+	result = DatumGetIntervalP(DirectFunctionCall1(interval_justify_hours, IntervalPGetDatum(result)));
+	PG_RETURN_INTERVAL_P(result);
+}
+
 struct timezone_to_id {
 	const char *name;
 	const char *nameupper;

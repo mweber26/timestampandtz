@@ -336,3 +336,21 @@ select '09-18-2014 8:15:19.12345678'::timestampandtz(0);
  Thu Sep 18 08:15:19 2014 @ US/Eastern
 (1 row)
 
+select '8/1/2014 8:15 @ US/Pacific'::timestampandtz - '8/1/2014 8:15 @ US/Eastern'::timestampandtz;
+ ?column?  
+-----------
+ @ 3 hours
+(1 row)
+
+select '8/1/2014 8:15 @ US/Pacific'::timestampandtz - '8/1/2014 11:15 @ US/Eastern'::timestampandtz;
+ ?column? 
+----------
+ @ 0
+(1 row)
+
+select '12/1/2014 8:15 @ US/Eastern'::timestampandtz - '10/1/2014 8:15 @ US/Eastern'::timestampandtz;
+     ?column?     
+------------------
+ @ 61 days 1 hour
+(1 row)
+

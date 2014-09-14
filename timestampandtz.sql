@@ -29,6 +29,7 @@ create function timestamp_to_timestampandtz(timestamp) returns timestampandtz as
 create function timestampandtz_cmp(timestampandtz, timestampandtz) returns int4 as 'timestampandtz.so' language C immutable strict;
 create function timestampandtz_pl_interval(timestampandtz, interval) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
 create function timestampandtz_mi_interval(timestampandtz, interval) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_mi(timestampandtz, timestampandtz) returns interval as 'timestampandtz.so' language C immutable strict;
 create function tzmove(timestampandtz, text) returns timestampandtz as 'timestampandtz.so', 'timestampandtz_movetz' language C immutable strict;
 create function to_char(timestampandtz, text) returns text as 'timestampandtz.so', 'timestampandtz_to_char' language C strict;
 create function timestampandtz_scale(timestampandtz, integer) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
@@ -41,6 +42,7 @@ create operator > ( leftarg = timestampandtz, rightarg = timestampandtz, procedu
 create operator >= ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_ge );
 create operator + ( leftarg = timestampandtz, rightarg = interval, procedure = timestampandtz_pl_interval );
 create operator - ( leftarg = timestampandtz, rightarg = interval, procedure = timestampandtz_mi_interval );
+create operator - ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_mi );
 create cast(timestampandtz as timestamptz) with function timestampandtz_to_timestamptz(timestampandtz) as implicit;
 create cast(timestampandtz as timestamp) with function timestampandtz_to_timestamp(timestampandtz) as implicit;
 create cast(timestamptz as timestampandtz) with function timestamptz_to_timestampandtz(timestamptz) as implicit;

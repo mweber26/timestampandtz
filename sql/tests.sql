@@ -78,3 +78,7 @@ select '09-18-2014 8:15:19.12345678'::timestampandtz(3);
 select '09-18-2014 8:15:19.12345678'::timestampandtz(2);
 select '09-18-2014 8:15:19.12345678'::timestampandtz(1);
 select '09-18-2014 8:15:19.12345678'::timestampandtz(0);
+
+select '8/1/2014 8:15 @ US/Pacific'::timestampandtz - '8/1/2014 8:15 @ US/Eastern'::timestampandtz;
+select '8/1/2014 8:15 @ US/Pacific'::timestampandtz - '8/1/2014 11:15 @ US/Eastern'::timestampandtz;
+select '12/1/2014 8:15 @ US/Eastern'::timestampandtz - '10/1/2014 8:15 @ US/Eastern'::timestampandtz;
