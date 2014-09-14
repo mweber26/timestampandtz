@@ -233,3 +233,58 @@ select to_char('12-18-2014 8:15pm @ US/Central'::timestampandtz, 'DD Mon YYYY HH
  18 Dec 2014 08:15:00pm CST
 (1 row)
 
+select '09-18-2014 8:15:19.12345678'::timestampandtz(-1);
+ERROR:  TIMESTAMP(-1) AND TIME ZONE precision must not be negative
+LINE 1: select '09-18-2014 8:15:19.12345678'::timestampandtz(-1);
+                                              ^
+select '09-18-2014 8:15:19.12345678'::timestampandtz(7);
+WARNING:  TIMESTAMP(7) AND TIME ZONE precision reduced to maximum allowed, 6
+LINE 1: select '09-18-2014 8:15:19.12345678'::timestampandtz(7);
+                                              ^
+                timestampandtz                
+----------------------------------------------
+ Thu Sep 18 08:15:19.123457 2014 @ US/Eastern
+(1 row)
+
+select '09-18-2014 8:15:19.12345678'::timestampandtz(6);
+                timestampandtz                
+----------------------------------------------
+ Thu Sep 18 08:15:19.123457 2014 @ US/Eastern
+(1 row)
+
+select '09-18-2014 8:15:19.12345678'::timestampandtz(5);
+               timestampandtz                
+---------------------------------------------
+ Thu Sep 18 08:15:19.12346 2014 @ US/Eastern
+(1 row)
+
+select '09-18-2014 8:15:19.12345678'::timestampandtz(4);
+               timestampandtz               
+--------------------------------------------
+ Thu Sep 18 08:15:19.1235 2014 @ US/Eastern
+(1 row)
+
+select '09-18-2014 8:15:19.12345678'::timestampandtz(3);
+              timestampandtz               
+-------------------------------------------
+ Thu Sep 18 08:15:19.123 2014 @ US/Eastern
+(1 row)
+
+select '09-18-2014 8:15:19.12345678'::timestampandtz(2);
+              timestampandtz              
+------------------------------------------
+ Thu Sep 18 08:15:19.12 2014 @ US/Eastern
+(1 row)
+
+select '09-18-2014 8:15:19.12345678'::timestampandtz(1);
+             timestampandtz              
+-----------------------------------------
+ Thu Sep 18 08:15:19.1 2014 @ US/Eastern
+(1 row)
+
+select '09-18-2014 8:15:19.12345678'::timestampandtz(0);
+            timestampandtz             
+---------------------------------------
+ Thu Sep 18 08:15:19 2014 @ US/Eastern
+(1 row)
+

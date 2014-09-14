@@ -45,6 +45,119 @@ dt2local(Timestamp dt, int tz)
     return dt;
 }
 
+static int32 anytimestamp_typmodin(ArrayType *ta)
+{
+	int32		typmod;
+	int32	   *tl;
+	int			n;
+
+	tl = ArrayGetIntegerTypmods(ta, &n);
+
+	/*
+	 * we're not too tense about good error message here because grammar
+	 * shouldn't allow wrong number of modifiers for TIMESTAMP
+	 */
+	if (n != 1)
+		ereport(ERROR,
+				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				 errmsg("invalid type modifier")));
+
+	if (*tl < 0)
+		ereport(ERROR,
+				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				 errmsg("TIMESTAMP(%d)%s precision must not be negative",
+						*tl, " AND TIME ZONE")));
+	if (*tl > MAX_TIMESTAMP_PRECISION)
+	{
+		ereport(WARNING,
+				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+		   errmsg("TIMESTAMP(%d)%s precision reduced to maximum allowed, %d",
+				  *tl, " AND TIME ZONE",
+				  MAX_TIMESTAMP_PRECISION)));
+		typmod = MAX_TIMESTAMP_PRECISION;
+	}
+	else
+		typmod = *tl;
+
+	fprintf(stderr, "returning %d\n", typmod);
+	return typmod;
+}
+
+static char *anytimestamp_typmodout(int32 typmod)
+{
+	if (typmod >= 0)
+		return psprintf("(%d)", (int) typmod);
+	else
+		return "";
+}
+
+static void AdjustTimestampForTypmod(Timestamp *time, int32 typmod)
+{
+#ifdef HAVE_INT64_TIMESTAMP
+	static const int64 TimestampScales[MAX_TIMESTAMP_PRECISION + 1] = {
+		INT64CONST(1000000),
+		INT64CONST(100000),
+		INT64CONST(10000),
+		INT64CONST(1000),
+		INT64CONST(100),
+		INT64CONST(10),
+		INT64CONST(1)
+	};
+
+	static const int64 TimestampOffsets[MAX_TIMESTAMP_PRECISION + 1] = {
+		INT64CONST(500000),
+		INT64CONST(50000),
+		INT64CONST(5000),
+		INT64CONST(500),
+		INT64CONST(50),
+		INT64CONST(5),
+		INT64CONST(0)
+	};
+#else
+	static const double TimestampScales[MAX_TIMESTAMP_PRECISION + 1] = {
+		1,
+		10,
+		100,
+		1000,
+		10000,
+		100000,
+		1000000
+	};
+#endif
+
+	if (!TIMESTAMP_NOT_FINITE(*time)
+		&& (typmod != -1) && (typmod != MAX_TIMESTAMP_PRECISION))
+	{
+		if (typmod < 0 || typmod > MAX_TIMESTAMP_PRECISION)
+			ereport(ERROR,
+					(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				  errmsg("timestamp(%d) precision must be between %d and %d",
+						 typmod, 0, MAX_TIMESTAMP_PRECISION)));
+
+		/*
+		 * Note: this round-to-nearest code is not completely consistent about
+		 * rounding values that are exactly halfway between integral values.
+		 * On most platforms, rint() will implement round-to-nearest-even, but
+		 * the integer code always rounds up (away from zero).  Is it worth
+		 * trying to be consistent?
+		 */
+#ifdef HAVE_INT64_TIMESTAMP
+		if (*time >= INT64CONST(0))
+		{
+			*time = ((*time + TimestampOffsets[typmod]) / TimestampScales[typmod]) *
+				TimestampScales[typmod];
+		}
+		else
+		{
+			*time = -((((-*time) + TimestampOffsets[typmod]) / TimestampScales[typmod])
+					  * TimestampScales[typmod]);
+		}
+#else
+		*time = rint((double) *time * TimestampScales[typmod]) / TimestampScales[typmod];
+#endif
+	}
+}
+
 static Datum gen_timestamp(Timestamp stamp, int tz)
 {
 	TimestampAndTz *result = (TimestampAndTz *) palloc0(sizeof(TimestampAndTz));
@@ -57,6 +170,7 @@ PG_FUNCTION_INFO_V1(timestampandtz_in);
 Datum timestampandtz_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
+	int32 typmod = PG_GETARG_INT32(2);
 	Timestamp timestamp;
 	fsec_t fsec;
 	struct pg_tm tt, *tm = &tt;
@@ -68,6 +182,8 @@ Datum timestampandtz_in(PG_FUNCTION_ARGS)
 	char *tzn;
 	int tzid;
 	int tz_index;
+
+	fprintf(stderr, "typmod = %d\n", typmod);
 
 	tz_index = strcspn(str, "@");
 	if(tz_index < strlen(str))
@@ -146,6 +262,7 @@ Datum timestampandtz_in(PG_FUNCTION_ARGS)
 			TIMESTAMP_NOEND(timestamp);
 	}
 
+	AdjustTimestampForTypmod(&timestamp, typmod);
 	return gen_timestamp(timestamp, tzid);
 }
 
@@ -187,12 +304,15 @@ PG_FUNCTION_INFO_V1(timestampandtz_recv);
 Datum timestampandtz_recv(PG_FUNCTION_ARGS)
 {
 	StringInfo buf = (StringInfo)PG_GETARG_POINTER(0);
+	int32 typmod = PG_GETARG_INT32(2);
 	TimestampAndTz *result;
 
 	/* input the timestamp and the timezone id */
 	result = (TimestampAndTz *) palloc0(sizeof(TimestampAndTz));
 	result->time = pq_getmsgint64(buf);
 	result->tz = pq_getmsgint(buf, 2);
+
+	AdjustTimestampForTypmod(&result->time, typmod);
 	PG_RETURN_POINTER(result);
 }
 
@@ -207,6 +327,34 @@ Datum timestampandtz_send(PG_FUNCTION_ARGS)
 	pq_sendint64(&buf, arg->time);
 	pq_sendint(&buf, arg->tz, 2);
 	PG_RETURN_BYTEA_P(pq_endtypsend(&buf));
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_typmodin);
+Datum timestampandtz_typmodin(PG_FUNCTION_ARGS)
+{
+    ArrayType *ta = PG_GETARG_ARRAYTYPE_P(0);
+    PG_RETURN_INT32(anytimestamp_typmodin(ta));
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_typmodout);
+Datum timestampandtz_typmodout(PG_FUNCTION_ARGS)
+{
+    int32 typmod = PG_GETARG_INT32(0);
+	fprintf(stderr, "blah = %d\n", typmod);
+    PG_RETURN_CSTRING(anytimestamp_typmodout(typmod));
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_scale);
+Datum timestampandtz_scale(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *arg = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	int32 typmod = PG_GETARG_INT32(1);
+	Timestamp result;
+
+	result = arg->time;
+
+	AdjustTimestampForTypmod(&result, typmod);
+	return gen_timestamp(result, arg->tz);
 }
 
 PG_FUNCTION_INFO_V1(timestampandtz_timezone);

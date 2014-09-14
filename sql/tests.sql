@@ -58,3 +58,13 @@ select to_char('12-18-2014 8:15pm'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam');
 select to_char('12-18-2014 8:15pm'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam TZ');
 select to_char('12-18-2014 8:15pm @ US/Central'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam');
 select to_char('12-18-2014 8:15pm @ US/Central'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam TZ');
+
+select '09-18-2014 8:15:19.12345678'::timestampandtz(-1);
+select '09-18-2014 8:15:19.12345678'::timestampandtz(7);
+select '09-18-2014 8:15:19.12345678'::timestampandtz(6);
+select '09-18-2014 8:15:19.12345678'::timestampandtz(5);
+select '09-18-2014 8:15:19.12345678'::timestampandtz(4);
+select '09-18-2014 8:15:19.12345678'::timestampandtz(3);
+select '09-18-2014 8:15:19.12345678'::timestampandtz(2);
+select '09-18-2014 8:15:19.12345678'::timestampandtz(1);
+select '09-18-2014 8:15:19.12345678'::timestampandtz(0);
