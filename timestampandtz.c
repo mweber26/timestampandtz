@@ -8,6 +8,7 @@
 #include "utils/builtins.h"
 #include "utils/datetime.h"
 #include "parser/scansup.h"
+#include "access/xact.h"
 #include <string.h>
 
 PG_MODULE_MAGIC;
@@ -332,6 +333,67 @@ Datum timestampandtz_to_timestamp(PG_FUNCTION_ARGS)
 {
 	TimestampAndTz *dt = (TimestampAndTz *)PG_GETARG_POINTER(0);
 	PG_RETURN_TIMESTAMP(dt->time);
+}
+
+PG_FUNCTION_INFO_V1(timestamptz_to_timestampandtz);
+Datum timestamptz_to_timestampandtz(PG_FUNCTION_ARGS)
+{
+	TimestampTz timestamp = PG_GETARG_TIMESTAMPTZ(0);
+	char *tzn;
+	int tzid;
+
+	/* find our timezone id for the current session timezone */
+	tzn = pstrdup(pg_get_timezone_name(session_timezone));
+	tzid = tzname_to_tzid(tzn);
+
+	if(tzid == 0)
+	{
+		elog(ERROR, "missing timezone ID \"%s\"", tzn);
+		return gen_timestamp(DT_NOEND, 0);
+	}
+
+	return gen_timestamp(timestamp, tzid);
+}
+
+PG_FUNCTION_INFO_V1(timestamp_to_timestampandtz);
+Datum timestamp_to_timestampandtz(PG_FUNCTION_ARGS)
+{
+	Timestamp timestamp = PG_GETARG_TIMESTAMP(0);
+	Timestamp result;
+	struct pg_tm tm;
+	fsec_t fsec;
+	char *tzn;
+	int tzid, tz;
+	pg_tz * tzp = NULL;
+
+	/* find our timezone id for the current session timezone */
+	tzn = pstrdup(pg_get_timezone_name(session_timezone));
+	tzid = tzname_to_tzid(tzn);
+
+	if(tzid == 0)
+	{
+		elog(ERROR, "missing timezone ID \"%s\"", tzn);
+		return gen_timestamp(DT_NOEND, 0);
+	}
+
+
+	/* convert from the local timezone to utc */
+	if (timestamp2tm(timestamp, NULL, &tm, &fsec, NULL, NULL) != 0)
+		ereport(ERROR,
+				(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
+				 errmsg("timestamp out of range")));
+
+	/* get the local offset for the current time */
+	tzp = pg_tzset(tzn);
+	tz = DetermineTimeZoneOffset(&tm, tzp);
+
+	if (tm2timestamp(&tm, fsec, &tz, &result) != 0)
+		ereport(ERROR,
+				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				 errmsg("could not convert to time zone \"%s\"",
+						tzn)));
+
+	return gen_timestamp(result, tzid);
 }
 
 PG_FUNCTION_INFO_V1(timestampandtz_cmp);
