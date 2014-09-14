@@ -43,3 +43,7 @@ insert into times values ('9-18-2014 7:18pm @ US/Central');
 select dt,dt::timestamp,dt::timestamptz from times order by times.dt asc;
 select dt,dt at time zone 'US/Eastern' from times order by times.dt asc;
 select dt,dt at time zone 'US/Central' from times order by times.dt asc;
+
+select tzmove('9-18-2014 8:15pm @ US/Eastern'::timestampandtz, 'US/Eastern');
+select tzmove('9-18-2014 8:15pm @ US/Eastern'::timestampandtz, 'US/Pacific');
+select tzmove('9-18-2014 8:15pm @ US/Eastern'::timestampandtz, 'foobar');

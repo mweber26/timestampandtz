@@ -95,8 +95,7 @@ Datum timestampandtz_in(PG_FUNCTION_ARGS)
 	if(tzid == 0)
 	{
 		elog(ERROR, "missing timezone ID \"%s\" while parsing timestampandtz \"%s\"", tzn, str);
-		TIMESTAMP_NOEND(timestamp);
-		return gen_timestamp(timestamp, 0);
+		return gen_timestamp(DT_NOEND, 0);
 	}
 
 	/* standard date/time parse */
@@ -432,6 +431,27 @@ Datum timestampandtz_pl_interval(PG_FUNCTION_ARGS)
 	}
 
 	return gen_timestamp(timestamp, dt->tz);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_movetz);
+Datum timestampandtz_movetz(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	text *zone = PG_GETARG_TEXT_PP(1);
+	char tzname[TZ_STRLEN_MAX + 1];
+	int tzid;
+
+	/* find our timezone id */
+	text_to_cstring_buffer(zone, tzname, sizeof(tzname));
+	tzid = tzname_to_tzid(tzname);
+
+	if(tzid == 0)
+	{
+		elog(ERROR, "missing timezone ID \"%s\"", tzname);
+		return gen_timestamp(DT_NOEND, 0);
+	}
+
+	return gen_timestamp(dt->time, tzid);
 }
 
 struct timezone_to_id {
