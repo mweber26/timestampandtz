@@ -188,6 +188,10 @@ postgres=# select tzmove('9-18-2014 8:15pm @ US/Eastern'::timestampandtz, 'US/Pa
 
 Functions to perfrom date truncation on timestampandtz values. See https://github.com/mweber26/timestampandtz/wiki/date_trunc for a detailed description.
 
+#### date_part
+
+Function to get a date part from the local time of the timestamp.
+
 #### at time zone
 
 The standard **at time zone** clause works by returning a standard timestamp (no zone information) at the specified time zone:

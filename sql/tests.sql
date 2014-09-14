@@ -90,3 +90,6 @@ select date_trunc('month', '8/15/2014 8:15 @ US/Pacific'::timestampandtz);
 
 select date_trunc_at('day', '2014-09-15 20:15:00 @ US/Pacific', 'US/Eastern');
 select date_trunc_at('day', '2014-09-15 23:15:00 @ US/Pacific', 'US/Eastern');
+
+select date_part('hour', '9/1/2015 8:15am @ US/Eastern'::timestampandtz);
+select date_part('hour', '9/1/2015 8:15am @ US/Pacific'::timestampandtz);

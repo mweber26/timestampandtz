@@ -398,3 +398,15 @@ select date_trunc_at('day', '2014-09-15 23:15:00 @ US/Pacific', 'US/Eastern');
  Mon Sep 15 21:00:00 2014 @ US/Pacific
 (1 row)
 
+select date_part('hour', '9/1/2015 8:15am @ US/Eastern'::timestampandtz);
+ date_part 
+-----------
+         8
+(1 row)
+
+select date_part('hour', '9/1/2015 8:15am @ US/Pacific'::timestampandtz);
+ date_part 
+-----------
+         8
+(1 row)
+
