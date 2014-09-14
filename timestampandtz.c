@@ -54,7 +54,6 @@ PG_FUNCTION_INFO_V1(timestampandtz_in);
 Datum timestampandtz_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
-	TimestampAndTz *result;
 	Timestamp timestamp;
 	fsec_t fsec;
 	struct pg_tm tt, *tm = &tt;

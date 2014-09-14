@@ -1,0 +1,4 @@
+comment = 'Timestamp stored with timezone type'
+default_version = '0.0.1'
+module_pathname = '$libdir/timestampandtz'
+relocatable = true
