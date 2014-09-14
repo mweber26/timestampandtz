@@ -386,3 +386,15 @@ select date_trunc('month', '8/15/2014 8:15 @ US/Pacific'::timestampandtz);
  Fri Aug 01 00:00:00 2014 @ US/Pacific
 (1 row)
 
+select date_trunc_at('day', '2014-09-15 20:15:00 @ US/Pacific', 'US/Eastern');
+             date_trunc_at             
+---------------------------------------
+ Sun Sep 14 21:00:00 2014 @ US/Pacific
+(1 row)
+
+select date_trunc_at('day', '2014-09-15 23:15:00 @ US/Pacific', 'US/Eastern');
+             date_trunc_at             
+---------------------------------------
+ Mon Sep 15 21:00:00 2014 @ US/Pacific
+(1 row)
+

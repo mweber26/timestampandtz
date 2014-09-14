@@ -37,6 +37,8 @@ Datum timestamptz_to_timestampandtz(PG_FUNCTION_ARGS);
 Datum timestamp_to_timestampandtz(PG_FUNCTION_ARGS);
 Datum timestampandtz_movetz(PG_FUNCTION_ARGS);
 Datum timestampandtz_to_char(PG_FUNCTION_ARGS);
+Datum timestampandtz_trunc(PG_FUNCTION_ARGS);
+Datum timestampandtz_trunc_at(PG_FUNCTION_ARGS);
 
 typedef struct TimestampAndTz {
 	Timestamp time;
@@ -866,6 +868,175 @@ Datum timestampandtz_trunc(PG_FUNCTION_ARGS)
 		}
 
 		tz = DetermineTimeZoneOffset(tm, tzp);
+		if (tm2timestamp(tm, fsec, &tz, &result) != 0)
+			ereport(ERROR,
+					(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
+					 errmsg("timestamp out of range")));
+	}
+	else
+	{
+		ereport(ERROR,
+				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+			   errmsg("timestamp with time zone units \"%s\" not recognized",
+					  lowunits)));
+		result = 0;
+	}
+
+	return gen_timestamp(result, dt->tz);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_trunc_at);
+Datum timestampandtz_trunc_at(PG_FUNCTION_ARGS)
+{
+	text *units = PG_GETARG_TEXT_PP(0);
+	TimestampAndTz *dt = (TimestampAndTz *)PG_GETARG_POINTER(1);
+	text *zone = PG_GETARG_TEXT_PP(2);
+	TimestampTz result;
+	int	tz;
+	int	type, val;
+	char *lowunits;
+	fsec_t fsec;
+	struct pg_tm tt, *tm = &tt;
+	const char *source_tzname = NULL;
+	pg_tz *source_tzp = NULL;
+	char target_tzname[TZ_STRLEN_MAX + 1];
+	int target_tzid;
+	pg_tz *target_tzp = NULL;
+
+	if (TIMESTAMP_NOT_FINITE(dt->time) || dt->tz == 0)
+		return gen_timestamp(DT_NOEND, 0);
+
+	/* find the target timezone id */
+	text_to_cstring_buffer(zone, target_tzname, sizeof(target_tzname));
+	target_tzid = tzname_to_tzid(target_tzname);
+	if(target_tzid == 0)
+	{
+		elog(ERROR, "missing timezone ID \"%s\"", target_tzname);
+		return gen_timestamp(DT_NOEND, 0);
+	}
+	target_tzp = pg_tzset(target_tzname);
+
+	/* find the source timezone id */
+	source_tzname = tzid_to_tzname(dt->tz);
+	source_tzp = pg_tzset(source_tzname);
+
+	lowunits = downcase_truncate_identifier(VARDATA_ANY(units),
+											VARSIZE_ANY_EXHDR(units),
+											false);
+
+	type = DecodeUnits(0, lowunits, &val);
+
+	if (type == UNITS)
+	{
+		/* get the tm time for the time in the target timezone : UTC -> target */
+		if (timestamp2tm(dt->time, &tz, tm, &fsec, NULL, target_tzp) != 0)
+			ereport(ERROR,
+					(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
+					 errmsg("timestamp out of range")));
+
+		switch (val)
+		{
+			case DTK_WEEK:
+				{
+					int			woy;
+
+					woy = date2isoweek(tm->tm_year, tm->tm_mon, tm->tm_mday);
+
+					/*
+					 * If it is week 52/53 and the month is January, then the
+					 * week must belong to the previous year. Also, some
+					 * December dates belong to the next year.
+					 */
+					if (woy >= 52 && tm->tm_mon == 1)
+						--tm->tm_year;
+					if (woy <= 1 && tm->tm_mon == MONTHS_PER_YEAR)
+						++tm->tm_year;
+					isoweek2date(woy, &(tm->tm_year), &(tm->tm_mon), &(tm->tm_mday));
+					tm->tm_hour = 0;
+					tm->tm_min = 0;
+					tm->tm_sec = 0;
+					fsec = 0;
+					break;
+				}
+				/* one may consider DTK_THOUSAND and DTK_HUNDRED... */
+			case DTK_MILLENNIUM:
+
+				/*
+				 * truncating to the millennium? what is this supposed to
+				 * mean? let us put the first year of the millennium... i.e.
+				 * -1000, 1, 1001, 2001...
+				 */
+				if (tm->tm_year > 0)
+					tm->tm_year = ((tm->tm_year + 999) / 1000) * 1000 - 999;
+				else
+					tm->tm_year = -((999 - (tm->tm_year - 1)) / 1000) * 1000 + 1;
+				/* FALL THRU */
+			case DTK_CENTURY:
+				/* truncating to the century? as above: -100, 1, 101... */
+				if (tm->tm_year > 0)
+					tm->tm_year = ((tm->tm_year + 99) / 100) * 100 - 99;
+				else
+					tm->tm_year = -((99 - (tm->tm_year - 1)) / 100) * 100 + 1;
+				/* FALL THRU */
+			case DTK_DECADE:
+
+				/*
+				 * truncating to the decade? first year of the decade. must
+				 * not be applied if year was truncated before!
+				 */
+				if (val != DTK_MILLENNIUM && val != DTK_CENTURY)
+				{
+					if (tm->tm_year > 0)
+						tm->tm_year = (tm->tm_year / 10) * 10;
+					else
+						tm->tm_year = -((8 - (tm->tm_year - 1)) / 10) * 10;
+				}
+				/* FALL THRU */
+			case DTK_YEAR:
+				tm->tm_mon = 1;
+				/* FALL THRU */
+			case DTK_QUARTER:
+				tm->tm_mon = (3 * ((tm->tm_mon - 1) / 3)) + 1;
+				/* FALL THRU */
+			case DTK_MONTH:
+				tm->tm_mday = 1;
+				/* FALL THRU */
+			case DTK_DAY:
+				tm->tm_hour = 0;
+				/* FALL THRU */
+			case DTK_HOUR:
+				tm->tm_min = 0;
+				/* FALL THRU */
+			case DTK_MINUTE:
+				tm->tm_sec = 0;
+				/* FALL THRU */
+			case DTK_SECOND:
+				fsec = 0;
+				break;
+
+			case DTK_MILLISEC:
+#ifdef HAVE_INT64_TIMESTAMP
+				fsec = (fsec / 1000) * 1000;
+#else
+				fsec = floor(fsec * 1000) / 1000;
+#endif
+				break;
+			case DTK_MICROSEC:
+#ifndef HAVE_INT64_TIMESTAMP
+				fsec = floor(fsec * 1000000) / 1000000;
+#endif
+				break;
+
+			default:
+				ereport(ERROR,
+						(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+						 errmsg("timestamp with time zone units \"%s\" not "
+								"supported", lowunits)));
+				result = 0;
+		}
+
+		/* convert back to UTC in target time zone */
+		tz = DetermineTimeZoneOffset(tm, target_tzp);
 		if (tm2timestamp(tm, fsec, &tz, &result) != 0)
 			ereport(ERROR,
 					(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
