@@ -159,7 +159,7 @@ Datum timestampandtz_out(PG_FUNCTION_ARGS)
 	pg_tz * tzp = NULL;
 	const char * tzname = NULL;
 
-	/* does the argument havw a valid timezone */
+	/* does the argument have a valid timezone */
 	if(dt->tz != 0)
 	{
 		tzname = tzid_to_tzname(dt->tz);
@@ -377,16 +377,17 @@ Datum timestamp_to_timestampandtz(PG_FUNCTION_ARGS)
 	}
 
 
-	/* convert from the local timezone to utc */
+	/* convert from the local timestamp to a local tm struct */
 	if (timestamp2tm(timestamp, NULL, &tm, &fsec, NULL, NULL) != 0)
 		ereport(ERROR,
 				(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
 				 errmsg("timestamp out of range")));
 
-	/* get the local offset for the current time */
+	/* get the local offset for the tm local time */
 	tzp = pg_tzset(tzn);
 	tz = DetermineTimeZoneOffset(&tm, tzp);
 
+	/* convert from the local timezone to utc timestamp */
 	if (tm2timestamp(&tm, fsec, &tz, &result) != 0)
 		ereport(ERROR,
 				(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
