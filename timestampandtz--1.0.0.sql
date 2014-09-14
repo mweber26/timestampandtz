@@ -33,6 +33,7 @@ create function timestampandtz_mi(timestampandtz, timestampandtz) returns interv
 create function tzmove(timestampandtz, text) returns timestampandtz as 'timestampandtz.so', 'timestampandtz_movetz' language C immutable strict;
 create function to_char(timestampandtz, text) returns text as 'timestampandtz.so', 'timestampandtz_to_char' language C strict;
 create function timestampandtz_scale(timestampandtz, integer) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
+create function date_trunc(text, timestampandtz) returns timestampandtz as 'timestampandtz.so', 'timestampandtz_trunc' language C immutable strict;
 
 create operator = ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_eq, negator = operator(<>) );
 create operator <> ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_ne, negator = operator(=) );

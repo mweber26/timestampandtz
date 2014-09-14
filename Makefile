@@ -12,7 +12,4 @@ include $(PGXS)
 
 all: $(EXTENSION)--$(EXTVERSION).sql
 
-$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION).sql
-	cp $< $@
-
-timestampandtz.o : to_char.c
+timestampandtz.o : to_char.c zones.c

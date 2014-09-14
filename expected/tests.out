@@ -1,8 +1,4 @@
-\set ECHO 0
-psql:timestampandtz.sql:2: NOTICE:  return type timestampandtz is only a shell
-psql:timestampandtz.sql:3: NOTICE:  argument type timestampandtz is only a shell
-psql:timestampandtz.sql:4: NOTICE:  return type timestampandtz is only a shell
-psql:timestampandtz.sql:5: NOTICE:  argument type timestampandtz is only a shell
+create extension timestampandtz;
 set time zone 'US/Eastern';
 select '9-18-2014 8:15pm'::timestampandtz;
             timestampandtz             
@@ -352,5 +348,41 @@ select '12/1/2014 8:15 @ US/Eastern'::timestampandtz - '10/1/2014 8:15 @ US/East
      ?column?     
 ------------------
  @ 61 days 1 hour
+(1 row)
+
+select date_trunc('hour', '8/15/2014 8:15 @ US/Eastern'::timestampandtz);
+              date_trunc               
+---------------------------------------
+ Fri Aug 15 08:00:00 2014 @ US/Eastern
+(1 row)
+
+select date_trunc('hour', '8/15/2014 8:15 @ US/Pacific'::timestampandtz);
+              date_trunc               
+---------------------------------------
+ Fri Aug 15 08:00:00 2014 @ US/Pacific
+(1 row)
+
+select date_trunc('day', '8/15/2014 8:15 @ US/Eastern'::timestampandtz);
+              date_trunc               
+---------------------------------------
+ Fri Aug 15 00:00:00 2014 @ US/Eastern
+(1 row)
+
+select date_trunc('day', '8/15/2014 8:15 @ US/Pacific'::timestampandtz);
+              date_trunc               
+---------------------------------------
+ Fri Aug 15 00:00:00 2014 @ US/Pacific
+(1 row)
+
+select date_trunc('month', '8/15/2014 8:15 @ US/Eastern'::timestampandtz);
+              date_trunc               
+---------------------------------------
+ Fri Aug 01 00:00:00 2014 @ US/Eastern
+(1 row)
+
+select date_trunc('month', '8/15/2014 8:15 @ US/Pacific'::timestampandtz);
+              date_trunc               
+---------------------------------------
+ Fri Aug 01 00:00:00 2014 @ US/Pacific
 (1 row)
 

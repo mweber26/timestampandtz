@@ -1,6 +1,5 @@
 *.o
 *.so
-timestampandtz--*.sql
 results
 regression.diffs
 regression.out

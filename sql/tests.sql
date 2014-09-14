@@ -1,6 +1,4 @@
-\set ECHO 0
-\i timestampandtz.sql
-\set ECHO all
+create extension timestampandtz;
 
 set time zone 'US/Eastern';
 select '9-18-2014 8:15pm'::timestampandtz;
@@ -82,3 +80,10 @@ select '09-18-2014 8:15:19.12345678'::timestampandtz(0);
 select '8/1/2014 8:15 @ US/Pacific'::timestampandtz - '8/1/2014 8:15 @ US/Eastern'::timestampandtz;
 select '8/1/2014 8:15 @ US/Pacific'::timestampandtz - '8/1/2014 11:15 @ US/Eastern'::timestampandtz;
 select '12/1/2014 8:15 @ US/Eastern'::timestampandtz - '10/1/2014 8:15 @ US/Eastern'::timestampandtz;
+
+select date_trunc('hour', '8/15/2014 8:15 @ US/Eastern'::timestampandtz);
+select date_trunc('hour', '8/15/2014 8:15 @ US/Pacific'::timestampandtz);
+select date_trunc('day', '8/15/2014 8:15 @ US/Eastern'::timestampandtz);
+select date_trunc('day', '8/15/2014 8:15 @ US/Pacific'::timestampandtz);
+select date_trunc('month', '8/15/2014 8:15 @ US/Eastern'::timestampandtz);
+select date_trunc('month', '8/15/2014 8:15 @ US/Pacific'::timestampandtz);
