@@ -21,6 +21,8 @@ typedef struct TimestampAndTz {
 static const char * tzid_to_tzname(int id);
 static int tzname_to_tzid(const char *name);
 
+#include "to_char.c"
+
 static void
 EncodeSpecialTimestamp(Timestamp dt, char *str)
 {

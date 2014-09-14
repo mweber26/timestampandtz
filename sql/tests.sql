@@ -50,3 +50,11 @@ select tzmove('9-18-2014 8:15pm @ US/Eastern'::timestampandtz, 'US/Eastern');
 select tzmove('9-18-2014 8:15pm @ US/Eastern'::timestampandtz, 'US/Pacific');
 select tzmove('9-18-2014 8:15pm @ US/Eastern'::timestampandtz, 'foobar');
 
+select to_char('09-18-2014 8:15pm'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam');
+select to_char('09-18-2014 8:15pm'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam TZ');
+select to_char('09-18-2014 8:15pm @ US/Central'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam');
+select to_char('09-18-2014 8:15pm @ US/Central'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam TZ');
+select to_char('12-18-2014 8:15pm'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam');
+select to_char('12-18-2014 8:15pm'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam TZ');
+select to_char('12-18-2014 8:15pm @ US/Central'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam');
+select to_char('12-18-2014 8:15pm @ US/Central'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam TZ');

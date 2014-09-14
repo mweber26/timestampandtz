@@ -185,3 +185,51 @@ select tzmove('9-18-2014 8:15pm @ US/Eastern'::timestampandtz, 'US/Pacific');
 
 select tzmove('9-18-2014 8:15pm @ US/Eastern'::timestampandtz, 'foobar');
 ERROR:  missing timezone ID "foobar"
+select to_char('09-18-2014 8:15pm'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam');
+        to_char         
+------------------------
+ 18 Sep 2014 08:15:00pm
+(1 row)
+
+select to_char('09-18-2014 8:15pm'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam TZ');
+          to_char           
+----------------------------
+ 18 Sep 2014 08:15:00pm EDT
+(1 row)
+
+select to_char('09-18-2014 8:15pm @ US/Central'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam');
+        to_char         
+------------------------
+ 18 Sep 2014 08:15:00pm
+(1 row)
+
+select to_char('09-18-2014 8:15pm @ US/Central'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam TZ');
+          to_char           
+----------------------------
+ 18 Sep 2014 08:15:00pm CDT
+(1 row)
+
+select to_char('12-18-2014 8:15pm'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam');
+        to_char         
+------------------------
+ 18 Dec 2014 08:15:00pm
+(1 row)
+
+select to_char('12-18-2014 8:15pm'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam TZ');
+          to_char           
+----------------------------
+ 18 Dec 2014 08:15:00pm EST
+(1 row)
+
+select to_char('12-18-2014 8:15pm @ US/Central'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam');
+        to_char         
+------------------------
+ 18 Dec 2014 08:15:00pm
+(1 row)
+
+select to_char('12-18-2014 8:15pm @ US/Central'::timestampandtz, 'DD Mon YYYY HH12:MI:SSam TZ');
+          to_char           
+----------------------------
+ 18 Dec 2014 08:15:00pm CST
+(1 row)
+

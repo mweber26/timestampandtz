@@ -19,6 +19,7 @@ create function timestamp_to_timestampandtz(timestamp) returns timestampandtz as
 create function timestampandtz_cmp(timestampandtz, timestampandtz) returns int4 as 'timestampandtz.so' language C immutable strict;
 create function timestampandtz_pl_interval(timestampandtz, interval) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
 create function tzmove(timestampandtz, text) returns timestampandtz as 'timestampandtz.so', 'timestampandtz_movetz' language C immutable strict;
+create function to_char(timestampandtz, text) returns text as 'timestampandtz.so', 'timestampandtz_to_char' language C strict;
 
 create operator = ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_eq, negator = operator(<>) );
 create operator <> ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_ne, negator = operator(=) );

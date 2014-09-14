@@ -7,3 +7,4 @@ REGRESS = tests
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
+timestampandtz.o : to_char.c
