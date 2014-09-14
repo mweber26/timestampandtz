@@ -130,6 +130,54 @@ select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 months')::
  Fri Dec 19 04:15:00 2014
 (1 row)
 
+select '12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 hours';
+               ?column?                
+---------------------------------------
+ Thu Dec 18 17:15:00 2014 @ US/Eastern
+(1 row)
+
+select '12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 hours';
+               ?column?                
+---------------------------------------
+ Thu Dec 18 17:15:00 2014 @ US/Pacific
+(1 row)
+
+select '12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 months';
+               ?column?                
+---------------------------------------
+ Thu Sep 18 20:15:00 2014 @ US/Eastern
+(1 row)
+
+select '12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 months';
+               ?column?                
+---------------------------------------
+ Thu Sep 18 20:15:00 2014 @ US/Pacific
+(1 row)
+
+select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 hours')::timestamp;
+        timestamp         
+--------------------------
+ Thu Dec 18 22:15:00 2014
+(1 row)
+
+select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 hours')::timestamp;
+        timestamp         
+--------------------------
+ Fri Dec 19 01:15:00 2014
+(1 row)
+
+select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 months')::timestamp;
+        timestamp         
+--------------------------
+ Fri Sep 19 00:15:00 2014
+(1 row)
+
+select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 months')::timestamp;
+        timestamp         
+--------------------------
+ Fri Sep 19 03:15:00 2014
+(1 row)
+
 create table times (dt timestampandtz);
 create index ix_times_dt on times (dt);
 insert into times values ('9-18-2014 8:15pm @ US/Eastern');

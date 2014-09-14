@@ -32,6 +32,16 @@ select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 days')::ti
 select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 months')::timestamp;
 select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 months')::timestamp;
 
+select '12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 hours';
+select '12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 hours';
+select '12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 months';
+select '12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 months';
+
+select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 hours')::timestamp;
+select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 hours')::timestamp;
+select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 months')::timestamp;
+select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 months')::timestamp;
+
 create table times (dt timestampandtz);
 create index ix_times_dt on times (dt);
 

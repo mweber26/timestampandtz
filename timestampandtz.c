@@ -646,6 +646,20 @@ Datum timestampandtz_pl_interval(PG_FUNCTION_ARGS)
 	return gen_timestamp(timestamp, dt->tz);
 }
 
+PG_FUNCTION_INFO_V1(timestampandtz_mi_interval);
+Datum timestampandtz_mi_interval(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	Interval *span = PG_GETARG_INTERVAL_P(1);
+	Interval    tspan;
+
+	tspan.month = -span->month;
+	tspan.day = -span->day;
+	tspan.time = -span->time;
+
+	return DirectFunctionCall2(timestampandtz_pl_interval, gen_timestamp(dt->time, dt->tz), PointerGetDatum(&tspan));
+}
+
 PG_FUNCTION_INFO_V1(timestampandtz_movetz);
 Datum timestampandtz_movetz(PG_FUNCTION_ARGS)
 {
