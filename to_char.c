@@ -21,8 +21,8 @@
 #include "utils/numeric.h"
 #include "utils/pg_locale.h"
 
-extern char *months[],          /* month abbreviation   */
-	*days[];             /* full days        */
+extern const char * const months[];
+extern const char * const days[];
 
 /* ----------
  * Routines type
