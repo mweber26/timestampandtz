@@ -1,4 +1,3 @@
-#include "postgres.h"
 #include <ctype.h>
 #include <unistd.h>
 #include <math.h>
@@ -21,6 +20,9 @@
 #include "utils/int8.h"
 #include "utils/numeric.h"
 #include "utils/pg_locale.h"
+
+extern char *months[],          /* month abbreviation   */
+	*days[];             /* full days        */
 
 /* ----------
  * Routines type
@@ -301,26 +303,11 @@ typedef struct
 	int			age;
 } DCHCacheEntry;
 
-typedef struct
-{
-	FormatNode	format[NUM_CACHE_SIZE + 1];
-	char		str[NUM_CACHE_SIZE + 1];
-	int			age;
-	NUMDesc		Num;
-} NUMCacheEntry;
-
 /* global cache for --- date/time part */
 static DCHCacheEntry DCHCache[DCH_CACHE_FIELDS + 1];
 
 static int	n_DCHCache = 0;		/* number of entries */
 static int	DCHCounter = 0;
-
-/* global cache for --- number part */
-static NUMCacheEntry NUMCache[NUM_CACHE_FIELDS + 1];
-
-static int	n_NUMCache = 0;		/* number of entries */
-static int	NUMCounter = 0;
-static NUMCacheEntry *last_NUMCacheEntry = NUMCache + 0;
 
 /* ----------
  * For char->date/time conversion

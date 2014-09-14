@@ -3,7 +3,7 @@
 #include "access/heapam.h"
 #include "miscadmin.h"
 #include "funcapi.h"
-#include "server/pgtime.h"
+#include "pgtime.h"
 #include "libpq/pqformat.h"
 #include "utils/builtins.h"
 #include "utils/datetime.h"
@@ -12,6 +12,31 @@
 #include <string.h>
 
 PG_MODULE_MAGIC;
+
+Datum timestampandtz_in(PG_FUNCTION_ARGS);
+Datum timestampandtz_out(PG_FUNCTION_ARGS);
+Datum timestampandtz_recv(PG_FUNCTION_ARGS);
+Datum timestampandtz_send(PG_FUNCTION_ARGS);
+Datum timestampandtz_typmodin(PG_FUNCTION_ARGS);
+Datum timestampandtz_typmodout(PG_FUNCTION_ARGS);
+Datum timestampandtz_pl_interval(PG_FUNCTION_ARGS);
+Datum timestampandtz_mi_interval(PG_FUNCTION_ARGS);
+Datum timestampandtz_mi(PG_FUNCTION_ARGS);
+Datum timestampandtz_eq(PG_FUNCTION_ARGS);
+Datum timestampandtz_ne(PG_FUNCTION_ARGS);
+Datum timestampandtz_gt(PG_FUNCTION_ARGS);
+Datum timestampandtz_ge(PG_FUNCTION_ARGS);
+Datum timestampandtz_lt(PG_FUNCTION_ARGS);
+Datum timestampandtz_le(PG_FUNCTION_ARGS);
+Datum timestampandtz_cmp(PG_FUNCTION_ARGS);
+Datum timestampandtz_scale(PG_FUNCTION_ARGS);
+Datum timestampandtz_to_timestamptz(PG_FUNCTION_ARGS);
+Datum timestampandtz_to_timestamp(PG_FUNCTION_ARGS);
+Datum timestampandtz_timezone(PG_FUNCTION_ARGS);
+Datum timestamptz_to_timestampandtz(PG_FUNCTION_ARGS);
+Datum timestamp_to_timestampandtz(PG_FUNCTION_ARGS);
+Datum timestampandtz_movetz(PG_FUNCTION_ARGS);
+Datum timestampandtz_to_char(PG_FUNCTION_ARGS);
 
 typedef struct TimestampAndTz {
 	Timestamp time;
@@ -79,14 +104,17 @@ static int32 anytimestamp_typmodin(ArrayType *ta)
 	else
 		typmod = *tl;
 
-	fprintf(stderr, "returning %d\n", typmod);
 	return typmod;
 }
 
 static char *anytimestamp_typmodout(int32 typmod)
 {
 	if (typmod >= 0)
-		return psprintf("(%d)", (int) typmod);
+	{
+		char *ret = palloc(6);
+		sprintf(ret, "(%d)", (int) typmod);
+		return ret;
+	}
 	else
 		return "";
 }
@@ -182,8 +210,6 @@ Datum timestampandtz_in(PG_FUNCTION_ARGS)
 	char *tzn;
 	int tzid;
 	int tz_index;
-
-	fprintf(stderr, "typmod = %d\n", typmod);
 
 	tz_index = strcspn(str, "@");
 	if(tz_index < strlen(str))
@@ -340,7 +366,6 @@ PG_FUNCTION_INFO_V1(timestampandtz_typmodout);
 Datum timestampandtz_typmodout(PG_FUNCTION_ARGS)
 {
     int32 typmod = PG_GETARG_INT32(0);
-	fprintf(stderr, "blah = %d\n", typmod);
     PG_RETURN_CSTRING(anytimestamp_typmodout(typmod));
 }
 

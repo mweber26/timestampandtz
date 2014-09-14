@@ -1,10 +1,18 @@
 MODULES = timestampandtz
 EXTENSION = timestampandtz
-DATA = timestampandtz.sql
+EXTVERSION  = $(shell grep default_version $(EXTENSION).control | sed -e "s/default_version[[:space:]]*=[[:space:]]*'\\([^']*\\)'/\\1/")
+DATA = $(wildcard *--*.sql)
+EXTRA_CLEAN = $(EXTENSION)--$(EXTVERSION).sql
 DOCS = README.md
 REGRESS = tests
 
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
+
+all: $(EXTENSION)--$(EXTVERSION).sql
+
+$(EXTENSION)--$(EXTVERSION).sql: $(EXTENSION).sql
+	cp $< $@
+
 timestampandtz.o : to_char.c
