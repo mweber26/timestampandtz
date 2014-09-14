@@ -15,7 +15,7 @@ PG_MODULE_MAGIC;
 
 typedef struct TimestampAndTz {
 	Timestamp time;
-	int tz;
+	short tz;
 } TimestampAndTz;
 
 static const char * tzid_to_tzname(int id);
@@ -190,7 +190,7 @@ Datum timestampandtz_recv(PG_FUNCTION_ARGS)
 	/* input the timestamp and the timezone id */
 	result = (TimestampAndTz *) palloc0(sizeof(TimestampAndTz));
 	result->time = pq_getmsgint64(buf);
-	result->tz = pq_getmsgint(buf, 4);
+	result->tz = pq_getmsgint(buf, 2);
 	PG_RETURN_POINTER(result);
 }
 
@@ -203,7 +203,7 @@ Datum timestampandtz_send(PG_FUNCTION_ARGS)
 	/* output the timestamp and the timezone id */
 	pq_begintypsend(&buf);
 	pq_sendint64(&buf, arg->time);
-	pq_sendint(&buf, arg->tz, 4);
+	pq_sendint(&buf, arg->tz, 2);
 	PG_RETURN_BYTEA_P(pq_endtypsend(&buf));
 }
 
