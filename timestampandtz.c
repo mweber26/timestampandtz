@@ -40,6 +40,13 @@ Datum timestampandtz_to_char(PG_FUNCTION_ARGS);
 Datum timestampandtz_trunc(PG_FUNCTION_ARGS);
 Datum timestampandtz_trunc_at(PG_FUNCTION_ARGS);
 Datum timestampandtz_part(PG_FUNCTION_ARGS);
+Datum timestampandtz_eq_date(PG_FUNCTION_ARGS);
+Datum timestampandtz_ne_date(PG_FUNCTION_ARGS);
+Datum timestampandtz_gt_date(PG_FUNCTION_ARGS);
+Datum timestampandtz_ge_date(PG_FUNCTION_ARGS);
+Datum timestampandtz_lt_date(PG_FUNCTION_ARGS);
+Datum timestampandtz_le_date(PG_FUNCTION_ARGS);
+Datum timestampandtz_to_date(PG_FUNCTION_ARGS);
 
 typedef struct TimestampAndTz {
 	Timestamp time;
@@ -918,6 +925,33 @@ Datum timestampandtz_trunc(PG_FUNCTION_ARGS)
 	}
 
 	return gen_timestamp(result, dt->tz);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_to_date);
+Datum timestampandtz_to_date(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	struct pg_tm tt, *tm = &tt;
+    fsec_t fsec;
+	DateADT result;
+
+	if (TIMESTAMP_IS_NOBEGIN(dt->time) || dt->tz == 0)
+		DATE_NOBEGIN(result);
+	else if (TIMESTAMP_IS_NOEND(dt->time))
+		DATE_NOEND(result);
+	else
+	{
+		Timestamp local = tolocal(dt);
+
+ 		if (timestamp2tm(local, NULL, tm, &fsec, NULL, NULL) != 0)
+			ereport(ERROR,
+				(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
+				errmsg("timestamp out of range")));
+
+		result = date2j(tm->tm_year, tm->tm_mon, tm->tm_mday) - POSTGRES_EPOCH_JDATE;
+	}
+
+	PG_RETURN_DATEADT(result);
 }
 
 PG_FUNCTION_INFO_V1(timestampandtz_trunc_at);

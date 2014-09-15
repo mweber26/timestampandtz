@@ -20,6 +20,7 @@ create function timestampandtz_to_timestamptz(timestampandtz) returns timestampt
 create function timestampandtz_to_timestamp(timestampandtz) returns timestamp as 'timestampandtz.so' language C immutable strict;
 create function timestamptz_to_timestampandtz(timestamptz) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
 create function timestamp_to_timestampandtz(timestamp) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_to_date(timestampandtz) returns date as 'timestampandtz.so' language C immutable strict;
 create function timestampandtz_cmp(timestampandtz, timestampandtz) returns int4 as 'timestampandtz.so' language C immutable strict;
 create function timestampandtz_pl_interval(timestampandtz, interval) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
 create function timestampandtz_mi_interval(timestampandtz, interval) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
@@ -65,6 +66,7 @@ create cast(timestampandtz as timestamp) with function timestampandtz_to_timesta
 create cast(timestamptz as timestampandtz) with function timestamptz_to_timestampandtz(timestamptz) as implicit;
 create cast(timestamp as timestampandtz) with function timestamp_to_timestampandtz(timestamp) as implicit;
 create cast(timestampandtz as timestampandtz) with function timestampandtz_scale(timestampandtz, integer) as implicit;
+create cast(timestampandtz as date) with function timestampandtz_to_date(timestampandtz) as implicit;
 create operator class timestampandtz_ops default for type timestampandtz using btree as
 	operator 1 <, operator 2 <=, operator 3 =, operator 4 >=, operator 5 >,
 	function 1 timestampandtz_cmp( timestampandtz, timestampandtz );
