@@ -36,10 +36,16 @@ The type supports casting from both timestamp and timestamptz and to both timest
 
 #### Cast to timestamp
 
-Casts to timestamp are always done from the local timestamp of the timestampandtz to UTC.  Since the "at time zone" clause is also supported, the default, un-adorned conversion is to UTC:
+Casts to timestamp are always done from the local timestamp of the timestampandtz.  Since the "at time zone" clause is also supported, the default, un-adorned conversion is to UTC:
 
 ```sql
 postgres=# select '9/1/2014 10:15pm @ US/Eastern'::timestampandtz::timestamp;
+      timestamp      
+---------------------
+ 2014-09-01 22:15:00
+(1 row)
+
+postgres=# select '9/1/2014 10:15pm @ US/Eastern'::timestampandtz at time zone 'utc';
       timestamp      
 ---------------------
  2014-09-02 02:15:00

@@ -16,12 +16,6 @@ create type timestampandtz (
 );
 
 create function pg_catalog.timezone(text, timestampandtz) returns timestamp as 'timestampandtz.so', 'timestampandtz_timezone' LANGUAGE C IMMUTABLE STRICT;
-create function timestampandtz_eq(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
-create function timestampandtz_ne(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
-create function timestampandtz_lt(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
-create function timestampandtz_le(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
-create function timestampandtz_gt(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
-create function timestampandtz_ge(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
 create function timestampandtz_to_timestamptz(timestampandtz) returns timestamptz as 'timestampandtz.so' language C immutable strict;
 create function timestampandtz_to_timestamp(timestampandtz) returns timestamp as 'timestampandtz.so' language C immutable strict;
 create function timestamptz_to_timestampandtz(timestamptz) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
@@ -37,12 +31,32 @@ create function date_part(text, timestampandtz) returns float8 as 'timestampandt
 create function date_trunc(text, timestampandtz) returns timestampandtz as 'timestampandtz.so', 'timestampandtz_trunc' language C immutable strict;
 create function date_trunc_at(text, timestampandtz, text) returns timestampandtz as 'timestampandtz.so', 'timestampandtz_trunc_at' language C immutable strict;
 
+create function timestampandtz_eq(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_ne(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_lt(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_le(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_gt(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_ge(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
 create operator = ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_eq, negator = operator(<>) );
 create operator <> ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_ne, negator = operator(=) );
 create operator < ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_lt, commutator = operator(>) );
 create operator <= ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_le );
 create operator > ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_gt, commutator = operator(<) );
 create operator >= ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_ge );
+
+create function timestampandtz_eq_date(timestampandtz, date) returns boolean as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_ne_date(timestampandtz, date) returns boolean as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_lt_date(timestampandtz, date) returns boolean as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_le_date(timestampandtz, date) returns boolean as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_gt_date(timestampandtz, date) returns boolean as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_ge_date(timestampandtz, date) returns boolean as 'timestampandtz.so' language C immutable strict;
+create operator = ( leftarg = timestampandtz, rightarg = date, procedure = timestampandtz_eq_date, negator = operator(<>) );
+create operator <> ( leftarg = timestampandtz, rightarg = date, procedure = timestampandtz_ne_date, negator = operator(=) );
+create operator < ( leftarg = timestampandtz, rightarg = date, procedure = timestampandtz_lt_date, commutator = operator(>) );
+create operator <= ( leftarg = timestampandtz, rightarg = date, procedure = timestampandtz_le_date );
+create operator > ( leftarg = timestampandtz, rightarg = date, procedure = timestampandtz_gt_date, commutator = operator(<) );
+create operator >= ( leftarg = timestampandtz, rightarg = date, procedure = timestampandtz_ge_date );
+
 create operator + ( leftarg = timestampandtz, rightarg = interval, procedure = timestampandtz_pl_interval );
 create operator - ( leftarg = timestampandtz, rightarg = interval, procedure = timestampandtz_mi_interval );
 create operator - ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_mi );

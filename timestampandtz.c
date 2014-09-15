@@ -200,6 +200,41 @@ static Datum gen_timestamp(Timestamp stamp, int tz)
 	PG_RETURN_POINTER(result);
 }
 
+static Timestamp tolocal(TimestampAndTz *dt)
+{
+	Timestamp result;
+	struct pg_tm tm;
+	fsec_t fsec;
+	const char *tzn;
+	int tz;
+	pg_tz *tzp = NULL;
+
+	if(TIMESTAMP_NOT_FINITE(dt->time) || dt->tz == 0)
+	{
+		return DT_NOEND;
+	}
+	else
+	{
+		tzn = tzid_to_tzname(dt->tz);
+		tzp = pg_tzset(tzn);
+
+		/* convert from the local timestamp to a local tm struct */
+		if (timestamp2tm(dt->time, &tz, &tm, &fsec, NULL, tzp) != 0)
+			ereport(ERROR,
+					(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
+				 	errmsg("timestamp out of range")));
+
+		/* convert to timestamp, but leave in local time */
+		if (tm2timestamp(&tm, fsec, NULL, &result) != 0)
+			ereport(ERROR,
+					(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+				 	errmsg("could not convert to time zone \"%s\"",
+							tzn)));
+
+		return result;
+	}
+}
+
 PG_FUNCTION_INFO_V1(timestampandtz_in);
 Datum timestampandtz_in(PG_FUNCTION_ARGS)
 {
@@ -513,7 +548,7 @@ PG_FUNCTION_INFO_V1(timestampandtz_to_timestamp);
 Datum timestampandtz_to_timestamp(PG_FUNCTION_ARGS)
 {
 	TimestampAndTz *dt = (TimestampAndTz *)PG_GETARG_POINTER(0);
-	PG_RETURN_TIMESTAMP(dt->time);
+	PG_RETURN_TIMESTAMP(tolocal(dt));
 }
 
 PG_FUNCTION_INFO_V1(timestamptz_to_timestampandtz);
@@ -556,7 +591,6 @@ Datum timestamp_to_timestampandtz(PG_FUNCTION_ARGS)
 		elog(ERROR, "missing timezone ID \"%s\"", tzn);
 		return gen_timestamp(DT_NOEND, 0);
 	}
-
 
 	/* convert from the local timestamp to a local tm struct */
 	if (timestamp2tm(timestamp, NULL, &tm, &fsec, NULL, NULL) != 0)
@@ -1268,4 +1302,115 @@ Datum timestampandtz_part(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_FLOAT8(result);
+}
+
+static Timestamp date2timestamp(DateADT dateVal)
+{
+	Timestamp	result;
+
+	if (DATE_IS_NOBEGIN(dateVal))
+		TIMESTAMP_NOBEGIN(result);
+	else if (DATE_IS_NOEND(dateVal))
+		TIMESTAMP_NOEND(result);
+	else
+	{
+#ifdef HAVE_INT64_TIMESTAMP
+		/* date is days since 2000, timestamp is microseconds since same... */
+		result = dateVal * USECS_PER_DAY;
+		/* Date's range is wider than timestamp's, so check for overflow */
+		if (result / USECS_PER_DAY != dateVal)
+			ereport(ERROR,
+					(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
+					 errmsg("date out of range for timestamp")));
+#else
+		/* date is days since 2000, timestamp is seconds since same... */
+		result = dateVal * (double) SECS_PER_DAY;
+#endif
+	}
+
+	return result;
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_eq_date);
+Datum timestampandtz_eq_date(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt1 = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	DateADT		dateVal = PG_GETARG_DATEADT(1);
+	Timestamp	dt2;
+
+	dt2 = date2timestamp(dateVal);
+
+	PG_RETURN_BOOL(timestamp_cmp_internal(tolocal(dt1), dt2) == 0);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_ne_date);
+Datum timestampandtz_ne_date(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt1 = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	DateADT		dateVal = PG_GETARG_DATEADT(1);
+	Timestamp	dt2;
+
+	dt2 = date2timestamp(dateVal);
+
+	PG_RETURN_BOOL(timestamp_cmp_internal(tolocal(dt1), dt2) != 0);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_lt_date);
+Datum timestampandtz_lt_date(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt1 = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	DateADT		dateVal = PG_GETARG_DATEADT(1);
+	Timestamp	dt2;
+
+	dt2 = date2timestamp(dateVal);
+
+	PG_RETURN_BOOL(timestamp_cmp_internal(tolocal(dt1), dt2) < 0);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_gt_date);
+Datum timestampandtz_gt_date(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt1 = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	DateADT		dateVal = PG_GETARG_DATEADT(1);
+	Timestamp	dt2;
+
+	dt2 = date2timestamp(dateVal);
+
+	PG_RETURN_BOOL(timestamp_cmp_internal(tolocal(dt1), dt2) > 0);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_le_date);
+Datum timestampandtz_le_date(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt1 = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	DateADT		dateVal = PG_GETARG_DATEADT(1);
+	Timestamp	dt2;
+
+	dt2 = date2timestamp(dateVal);
+
+	PG_RETURN_BOOL(timestamp_cmp_internal(tolocal(dt1), dt2) <= 0);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_ge_date);
+Datum timestampandtz_ge_date(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt1 = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	DateADT		dateVal = PG_GETARG_DATEADT(1);
+	Timestamp	dt2;
+
+	dt2 = date2timestamp(dateVal);
+
+	PG_RETURN_BOOL(timestamp_cmp_internal(tolocal(dt1), dt2) >= 0);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_cmp_date);
+Datum timestampandtz_cmp_date(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt1 = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	DateADT		dateVal = PG_GETARG_DATEADT(1);
+	Timestamp	dt2;
+
+	dt2 = date2timestamp(dateVal);
+
+	PG_RETURN_INT32(timestamp_cmp_internal(tolocal(dt1), dt2));
 }

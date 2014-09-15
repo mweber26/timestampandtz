@@ -23,22 +23,22 @@ select '9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 days';
 select '9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 months';
 select '9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 months';
 
-select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 hours')::timestamp;
-select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 hours')::timestamp;
-select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 days')::timestamp;
-select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 days')::timestamp;
-select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 months')::timestamp;
-select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 months')::timestamp;
+select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 hours') at time zone 'utc';
+select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 hours') at time zone 'utc';
+select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 days') at time zone 'utc';
+select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 days') at time zone 'utc';
+select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 months') at time zone 'utc';
+select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 months') at time zone 'utc';
 
 select '12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 hours';
 select '12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 hours';
 select '12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 months';
 select '12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 months';
 
-select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 hours')::timestamp;
-select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 hours')::timestamp;
-select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 months')::timestamp;
-select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 months')::timestamp;
+select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 hours') at time zone 'utc';
+select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 hours') at time zone 'utc';
+select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 months') at time zone 'utc';
+select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 months') at time zone 'utc';
 
 create table times (dt timestampandtz);
 create index ix_times_dt on times (dt);
@@ -93,3 +93,8 @@ select date_trunc_at('day', '2014-09-15 23:15:00 @ US/Pacific', 'US/Eastern');
 
 select date_part('hour', '9/1/2015 8:15am @ US/Eastern'::timestampandtz);
 select date_part('hour', '9/1/2015 8:15am @ US/Pacific'::timestampandtz);
+
+select '8/15/2014'::timestampandtz='8/15/2014'::date;
+select '8/15/2014 @ US/Eastern'::timestampandtz='8/15/2014'::date;
+select '8/15/2014 @ US/Pacific'::timestampandtz='8/15/2014'::date;
+

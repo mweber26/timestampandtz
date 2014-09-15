@@ -32,13 +32,13 @@ LINE 1: select '9-18-2014 8:15pm @ foobar'::timestampandtz;
 select '9-18-2014 8:15pm @ US/Eastern'::timestampandtz::timestamp;
         timestamp         
 --------------------------
- Fri Sep 19 00:15:00 2014
+ Thu Sep 18 20:15:00 2014
 (1 row)
 
 select '9-18-2014 8:15pm @ US/Pacific'::timestampandtz::timestamp;
         timestamp         
 --------------------------
- Fri Sep 19 03:15:00 2014
+ Thu Sep 18 20:15:00 2014
 (1 row)
 
 set time zone 'US/Eastern';
@@ -90,38 +90,38 @@ select '9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 months';
  Thu Dec 18 20:15:00 2014 @ US/Pacific
 (1 row)
 
-select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 hours')::timestamp;
-        timestamp         
+select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 hours') at time zone 'utc';
+         timezone         
 --------------------------
  Fri Sep 19 03:15:00 2014
 (1 row)
 
-select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 hours')::timestamp;
-        timestamp         
+select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 hours') at time zone 'utc';
+         timezone         
 --------------------------
  Fri Sep 19 06:15:00 2014
 (1 row)
 
-select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 days')::timestamp;
-        timestamp         
+select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 days') at time zone 'utc';
+         timezone         
 --------------------------
  Mon Sep 22 00:15:00 2014
 (1 row)
 
-select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 days')::timestamp;
-        timestamp         
+select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 days') at time zone 'utc';
+         timezone         
 --------------------------
  Mon Sep 22 03:15:00 2014
 (1 row)
 
-select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 months')::timestamp;
-        timestamp         
+select ('9-18-2014 8:15pm @ US/Eastern'::timestampandtz + interval '3 months') at time zone 'utc';
+         timezone         
 --------------------------
  Fri Dec 19 01:15:00 2014
 (1 row)
 
-select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 months')::timestamp;
-        timestamp         
+select ('9-18-2014 8:15pm @ US/Pacific'::timestampandtz + interval '3 months') at time zone 'utc';
+         timezone         
 --------------------------
  Fri Dec 19 04:15:00 2014
 (1 row)
@@ -150,26 +150,26 @@ select '12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 months';
  Thu Sep 18 20:15:00 2014 @ US/Pacific
 (1 row)
 
-select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 hours')::timestamp;
-        timestamp         
+select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 hours') at time zone 'utc';
+         timezone         
 --------------------------
  Thu Dec 18 22:15:00 2014
 (1 row)
 
-select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 hours')::timestamp;
-        timestamp         
+select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 hours') at time zone 'utc';
+         timezone         
 --------------------------
  Fri Dec 19 01:15:00 2014
 (1 row)
 
-select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 months')::timestamp;
-        timestamp         
+select ('12-18-2014 8:15pm @ US/Eastern'::timestampandtz - interval '3 months') at time zone 'utc';
+         timezone         
 --------------------------
  Fri Sep 19 00:15:00 2014
 (1 row)
 
-select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 months')::timestamp;
-        timestamp         
+select ('12-18-2014 8:15pm @ US/Pacific'::timestampandtz - interval '3 months') at time zone 'utc';
+         timezone         
 --------------------------
  Fri Sep 19 03:15:00 2014
 (1 row)
@@ -185,12 +185,12 @@ insert into times values('9-18-2014 20:20'::timestamp);
 select dt,dt::timestamp,dt::timestamptz from times order by times.dt asc;
                   dt                   |            dt            |              dt              
 ---------------------------------------+--------------------------+------------------------------
- Thu Sep 18 20:15:00 2014 @ US/Eastern | Fri Sep 19 00:15:00 2014 | Thu Sep 18 20:15:00 2014 EDT
- Thu Sep 18 17:16:00 2014 @ US/Pacific | Fri Sep 19 00:16:00 2014 | Thu Sep 18 20:16:00 2014 EDT
- Thu Sep 18 20:17:00 2014 @ US/Eastern | Fri Sep 19 00:17:00 2014 | Thu Sep 18 20:17:00 2014 EDT
- Thu Sep 18 19:18:00 2014 @ US/Central | Fri Sep 19 00:18:00 2014 | Thu Sep 18 20:18:00 2014 EDT
- Thu Sep 18 20:19:00 2014 @ US/Eastern | Fri Sep 19 00:19:00 2014 | Thu Sep 18 20:19:00 2014 EDT
- Thu Sep 18 20:20:00 2014 @ US/Eastern | Fri Sep 19 00:20:00 2014 | Thu Sep 18 20:20:00 2014 EDT
+ Thu Sep 18 20:15:00 2014 @ US/Eastern | Thu Sep 18 20:15:00 2014 | Thu Sep 18 20:15:00 2014 EDT
+ Thu Sep 18 17:16:00 2014 @ US/Pacific | Thu Sep 18 17:16:00 2014 | Thu Sep 18 20:16:00 2014 EDT
+ Thu Sep 18 20:17:00 2014 @ US/Eastern | Thu Sep 18 20:17:00 2014 | Thu Sep 18 20:17:00 2014 EDT
+ Thu Sep 18 19:18:00 2014 @ US/Central | Thu Sep 18 19:18:00 2014 | Thu Sep 18 20:18:00 2014 EDT
+ Thu Sep 18 20:19:00 2014 @ US/Eastern | Thu Sep 18 20:19:00 2014 | Thu Sep 18 20:19:00 2014 EDT
+ Thu Sep 18 20:20:00 2014 @ US/Eastern | Thu Sep 18 20:20:00 2014 | Thu Sep 18 20:20:00 2014 EDT
 (6 rows)
 
 select dt,dt at time zone 'US/Eastern' from times order by times.dt asc;
@@ -408,5 +408,23 @@ select date_part('hour', '9/1/2015 8:15am @ US/Pacific'::timestampandtz);
  date_part 
 -----------
          8
+(1 row)
+
+select '8/15/2014'::timestampandtz='8/15/2014'::date;
+ ?column? 
+----------
+ t
+(1 row)
+
+select '8/15/2014 @ US/Eastern'::timestampandtz='8/15/2014'::date;
+ ?column? 
+----------
+ t
+(1 row)
+
+select '8/15/2014 @ US/Pacific'::timestampandtz='8/15/2014'::date;
+ ?column? 
+----------
+ t
 (1 row)
 
