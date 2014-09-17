@@ -541,7 +541,7 @@ Datum timestampandtz_gt(PG_FUNCTION_ARGS)
 {
 	TimestampAndTz *left = (TimestampAndTz *)PG_GETARG_POINTER(0);
 	TimestampAndTz *right = (TimestampAndTz *)PG_GETARG_POINTER(1);
-	PG_RETURN_BOOL(left->time < right->time);
+	PG_RETURN_BOOL(left->time > right->time);
 }
 
 PG_FUNCTION_INFO_V1(timestampandtz_to_timestamptz);

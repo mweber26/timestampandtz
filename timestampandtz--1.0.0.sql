@@ -40,9 +40,9 @@ create function timestampandtz_gt(timestampandtz, timestampandtz) returns boolea
 create function timestampandtz_ge(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
 create operator = ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_eq, negator = operator(<>) );
 create operator <> ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_ne, negator = operator(=) );
-create operator < ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_lt, commutator = operator(>) );
+create operator < ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_lt );
 create operator <= ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_le );
-create operator > ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_gt, commutator = operator(<) );
+create operator > ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_gt );
 create operator >= ( leftarg = timestampandtz, rightarg = timestampandtz, procedure = timestampandtz_ge );
 
 create function timestampandtz_eq_date(timestampandtz, date) returns boolean as 'timestampandtz.so' language C immutable strict;
