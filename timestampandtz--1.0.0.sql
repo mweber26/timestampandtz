@@ -32,6 +32,8 @@ create function date_part(text, timestampandtz) returns float8 as 'timestampandt
 create function date_trunc(text, timestampandtz) returns timestampandtz as 'timestampandtz.so', 'timestampandtz_trunc' language C immutable strict;
 create function date_trunc_at(text, timestampandtz, text) returns timestampandtz as 'timestampandtz.so', 'timestampandtz_trunc_at' language C immutable strict;
 
+create function timestampandtz_larger(timestampandtz, timestampandtz) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
+create function timestampandtz_smaller(timestampandtz, timestampandtz) returns timestampandtz as 'timestampandtz.so' language C immutable strict;
 create function timestampandtz_eq(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
 create function timestampandtz_ne(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
 create function timestampandtz_lt(timestampandtz, timestampandtz) returns boolean as 'timestampandtz.so' language C immutable strict;
@@ -70,3 +72,5 @@ create cast(timestampandtz as date) with function timestampandtz_to_date(timesta
 create operator class timestampandtz_ops default for type timestampandtz using btree as
 	operator 1 <, operator 2 <=, operator 3 =, operator 4 >=, operator 5 >,
 	function 1 timestampandtz_cmp( timestampandtz, timestampandtz );
+create aggregate max(timestampandtz) ( sfunc = timestampandtz_larger, stype = timestampandtz );
+create aggregate min(timestampandtz) ( sfunc = timestampandtz_smaller, stype = timestampandtz );

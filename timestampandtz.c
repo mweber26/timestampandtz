@@ -47,6 +47,8 @@ Datum timestampandtz_ge_date(PG_FUNCTION_ARGS);
 Datum timestampandtz_lt_date(PG_FUNCTION_ARGS);
 Datum timestampandtz_le_date(PG_FUNCTION_ARGS);
 Datum timestampandtz_to_date(PG_FUNCTION_ARGS);
+Datum timestampandtz_larger(PG_FUNCTION_ARGS);
+Datum timestampandtz_smaller(PG_FUNCTION_ARGS);
 
 typedef struct TimestampAndTz {
 	Timestamp time;
@@ -1447,4 +1449,28 @@ Datum timestampandtz_cmp_date(PG_FUNCTION_ARGS)
 	dt2 = date2timestamp(dateVal);
 
 	PG_RETURN_INT32(timestamp_cmp_internal(tolocal(dt1), dt2));
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_smaller);
+Datum timestampandtz_smaller(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt1 = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	TimestampAndTz *dt2 = (TimestampAndTz *)PG_GETARG_POINTER(1);
+
+	if(timestamp_cmp_internal(dt1->time, dt2->time) < 0)
+		return gen_timestamp(dt1->time, dt1->tz);
+	else
+		return gen_timestamp(dt2->time, dt2->tz);
+}
+
+PG_FUNCTION_INFO_V1(timestampandtz_larger);
+Datum timestampandtz_larger(PG_FUNCTION_ARGS)
+{
+	TimestampAndTz *dt1 = (TimestampAndTz *)PG_GETARG_POINTER(0);
+	TimestampAndTz *dt2 = (TimestampAndTz *)PG_GETARG_POINTER(1);
+
+	if(timestamp_cmp_internal(dt1->time, dt2->time) > 0)
+		return gen_timestamp(dt1->time, dt1->tz);
+	else
+		return gen_timestamp(dt2->time, dt2->tz);
 }
