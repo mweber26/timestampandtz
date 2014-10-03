@@ -1,0 +1,51 @@
+{
+   "name": "timestampandtz",
+   "abstract": "Timestamp and timezone data type for PostgreSQL",
+   "description": "timestampandtz is a data type for PostgreSQL that stores the timestamp and the source timezone",
+   "version": "1.0.0",
+   "maintainer": [
+      "Michael Weber <mtweber@gmail.com>"
+   ],
+   "license": {
+      "PostgreSQL": "http://www.postgresql.org/about/licence"
+   },
+   "prereqs": {
+      "runtime": {
+         "requires": {
+            "plpgsql": 0,
+            "PostgreSQL": "9.0.0"
+         },
+         "recommends": {
+            "PostgreSQL": "9.0.0"
+         }
+      }
+   },
+   "provides": {
+     "timestampandtz": {
+       "file": "timestampandtz--1.0.0.sql",
+       "version": "1.0.0",
+       "abstract": "Timestamp and timezone data type for PostgreSQL"
+     }
+   },
+   "resources": {
+      "bugtracker": {
+         "web": "https://github.com/mweber26/timestampandtz/issues"
+      },
+      "repository": {
+        "url":  "https://github.com/mweber26/timestampandtz.git",
+        "web":  "https://github.com/mweber26/timestampandtz",
+        "type": "git"
+      }
+   },
+   "generated_by": "Michael Weber",
+   "meta-spec": {
+      "version": "1.0.0",
+      "url": "http://pgxn.org/meta/spec.txt"
+   },
+   "tags": [
+      "timestamp",
+      "time",
+      "datetime",
+      "timezone"
+   ]
+}
