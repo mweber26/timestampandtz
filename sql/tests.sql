@@ -101,3 +101,6 @@ select '8/15/2014 @ US/Pacific'::timestampandtz='8/15/2014'::date;
 select '8/15/2014 9:15pm'::timestampandtz::date='8/15/2014'::date;
 select '8/15/2014 9:15pm @ US/Eastern'::timestampandtz::date='8/15/2014'::date;
 select '8/15/2014 9:15pm @ US/Pacific'::timestampandtz::date='8/15/2014'::date;
+
+select to_char('8/15/2014 9:15pm @ US/Eastern'::timestampandtz, 'HH24:MI YYYY-MM-DD');
+select to_char('8/15/2014 9:15pm @ US/Pacific'::timestampandtz, 'HH24:MI YYYY-MM-DD');

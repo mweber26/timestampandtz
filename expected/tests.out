@@ -446,3 +446,15 @@ select '8/15/2014 9:15pm @ US/Pacific'::timestampandtz::date='8/15/2014'::date;
  t
 (1 row)
 
+select to_char('8/15/2014 9:15pm @ US/Eastern'::timestampandtz, 'HH24:MI YYYY-MM-DD');
+     to_char      
+------------------
+ 21:15 2014-08-15
+(1 row)
+
+select to_char('8/15/2014 9:15pm @ US/Pacific'::timestampandtz, 'HH24:MI YYYY-MM-DD');
+     to_char      
+------------------
+ 21:15 2014-08-15
+(1 row)
+

@@ -11,6 +11,9 @@
 #include "access/xact.h"
 #include <string.h>
 
+#include "utils/date.h"
+#include "utils/array.h"
+
 PG_MODULE_MAGIC;
 
 Datum timestampandtz_in(PG_FUNCTION_ARGS);
@@ -49,6 +52,7 @@ Datum timestampandtz_le_date(PG_FUNCTION_ARGS);
 Datum timestampandtz_to_date(PG_FUNCTION_ARGS);
 Datum timestampandtz_larger(PG_FUNCTION_ARGS);
 Datum timestampandtz_smaller(PG_FUNCTION_ARGS);
+Datum timestampandtz_cmp_date(PG_FUNCTION_ARGS);
 
 typedef struct TimestampAndTz {
 	Timestamp time;
@@ -252,7 +256,7 @@ Datum timestampandtz_in(PG_FUNCTION_ARGS)
 	Timestamp timestamp;
 	fsec_t fsec;
 	struct pg_tm tt, *tm = &tt;
-	int tz, dtype, nf, dterr;
+	int tz, dtype = 0, nf, dterr;
 	char *field[MAXDATEFIELDS];
 	int  ftype[MAXDATEFIELDS];
 	char workbuf[MAXDATELEN + MAXDATEFIELDS];

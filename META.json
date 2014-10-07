@@ -2,7 +2,7 @@
    "name": "timestampandtz",
    "abstract": "Timestamp and timezone data type for PostgreSQL",
    "description": "timestampandtz is a data type for PostgreSQL that stores the timestamp and the source timezone",
-   "version": "1.0.0",
+   "version": "1.0.1",
    "maintainer": [
       "Michael Weber <mtweber@gmail.com>"
    ],
@@ -13,17 +13,17 @@
       "runtime": {
          "requires": {
             "plpgsql": 0,
-            "PostgreSQL": "9.0.0"
+            "PostgreSQL": "9.2.0"
          },
          "recommends": {
-            "PostgreSQL": "9.0.0"
+            "PostgreSQL": "9.2.0"
          }
       }
    },
    "provides": {
      "timestampandtz": {
        "file": "timestampandtz--1.0.0.sql",
-       "version": "1.0.0",
+       "version": "1.0.1",
        "abstract": "Timestamp and timezone data type for PostgreSQL"
      }
    },
