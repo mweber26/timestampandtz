@@ -69,7 +69,7 @@ static void debug_tm(struct pg_tm *tm)
 		tm->tm_hour, tm->tm_min, tm->tm_sec);
 }
 
-static void EncodeSpecialTimestamp(Timestamp dt, char *str)
+void EncodeSpecialTimestamp(Timestamp dt, char *str)
 {
     if (TIMESTAMP_IS_NOBEGIN(dt))
         strcpy(str, EARLY);
