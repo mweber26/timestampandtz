@@ -69,14 +69,14 @@ static void debug_tm(struct pg_tm *tm)
 		tm->tm_hour, tm->tm_min, tm->tm_sec);
 }
 
-static void EncodeSpecialTimestamp(Timestamp dt, char *str)
+static void TsEncodeSpecialTimestamp(Timestamp dt, char *str)
 {
     if (TIMESTAMP_IS_NOBEGIN(dt))
         strcpy(str, EARLY);
     else if (TIMESTAMP_IS_NOEND(dt))
         strcpy(str, LATE);
     else    /* shouldn't happen */
-        elog(ERROR, "invalid argument for EncodeSpecialTimestamp");
+        elog(ERROR, "invalid argument for TsEncodeSpecialTimestamp");
 }
 
 static Timestamp dt2local(Timestamp dt, int tz)
@@ -366,7 +366,7 @@ Datum timestampandtz_out(PG_FUNCTION_ARGS)
 	}
 
 	if(TIMESTAMP_NOT_FINITE(dt->time))
-		EncodeSpecialTimestamp(dt->time, buf);
+		TsEncodeSpecialTimestamp(dt->time, buf);
 	else if(timestamp2tm(dt->time, &tz, tm, &fsec, NULL, tzp) == 0)
 		EncodeDateTime(tm, fsec, false, tz, NULL, DateStyle, buf);
 	else

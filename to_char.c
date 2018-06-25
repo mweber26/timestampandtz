@@ -24,6 +24,14 @@
 extern const char * const months[];
 extern const char * const days[];
 
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
 /* ----------
  * Routines type
  * ----------
@@ -1222,7 +1230,11 @@ str_tolower(const char *buff, size_t nbytes, Oid collid)
 		{
 #ifdef HAVE_LOCALE_T
 			if (mylocale)
+#if (PG_VERSION_NUM >= 100000)
+				workspace[curr_char] = towlower_l(workspace[curr_char], mylocale->info.lt);
+#else
 				workspace[curr_char] = towlower_l(workspace[curr_char], mylocale);
+#endif
 			else
 #endif
 				workspace[curr_char] = towlower(workspace[curr_char]);
@@ -1274,7 +1286,11 @@ str_tolower(const char *buff, size_t nbytes, Oid collid)
 		{
 #ifdef HAVE_LOCALE_T
 			if (mylocale)
+#if (PG_VERSION_NUM >= 100000)
+				*p = tolower_l((unsigned char) *p, mylocale->info.lt);
+#else
 				*p = tolower_l((unsigned char) *p, mylocale);
+#endif
 			else
 #endif
 				*p = pg_tolower((unsigned char) *p);
@@ -1342,7 +1358,11 @@ str_toupper(const char *buff, size_t nbytes, Oid collid)
 		{
 #ifdef HAVE_LOCALE_T
 			if (mylocale)
+#if (PG_VERSION_NUM >= 100000)
+				workspace[curr_char] = towupper_l(workspace[curr_char], mylocale->info.lt);
+#else
 				workspace[curr_char] = towupper_l(workspace[curr_char], mylocale);
+#endif
 			else
 #endif
 				workspace[curr_char] = towupper(workspace[curr_char]);
@@ -1394,7 +1414,11 @@ str_toupper(const char *buff, size_t nbytes, Oid collid)
 		{
 #ifdef HAVE_LOCALE_T
 			if (mylocale)
+#if (PG_VERSION_NUM >= 100000)
+				*p = toupper_l((unsigned char) *p, mylocale->info.lt);
+#else
 				*p = toupper_l((unsigned char) *p, mylocale);
+#endif
 			else
 #endif
 				*p = pg_toupper((unsigned char) *p);
@@ -1464,11 +1488,19 @@ str_initcap(const char *buff, size_t nbytes, Oid collid)
 #ifdef HAVE_LOCALE_T
 			if (mylocale)
 			{
+#if (PG_VERSION_NUM >= 100000)
+				if (wasalnum)
+					workspace[curr_char] = towlower_l(workspace[curr_char], mylocale->info.lt);
+				else
+					workspace[curr_char] = towupper_l(workspace[curr_char], mylocale->info.lt);
+				wasalnum = iswalnum_l(workspace[curr_char], mylocale->info.lt);
+#else
 				if (wasalnum)
 					workspace[curr_char] = towlower_l(workspace[curr_char], mylocale);
 				else
 					workspace[curr_char] = towupper_l(workspace[curr_char], mylocale);
 				wasalnum = iswalnum_l(workspace[curr_char], mylocale);
+#endif
 			}
 			else
 #endif
@@ -1528,11 +1560,19 @@ str_initcap(const char *buff, size_t nbytes, Oid collid)
 #ifdef HAVE_LOCALE_T
 			if (mylocale)
 			{
+#if (PG_VERSION_NUM >= 100000)
+				if (wasalnum)
+					*p = tolower_l((unsigned char) *p, mylocale->info.lt);
+				else
+					*p = toupper_l((unsigned char) *p, mylocale->info.lt);
+				wasalnum = isalnum_l((unsigned char) *p, mylocale->info.lt);
+#else
 				if (wasalnum)
 					*p = tolower_l((unsigned char) *p, mylocale);
 				else
 					*p = toupper_l((unsigned char) *p, mylocale);
 				wasalnum = isalnum_l((unsigned char) *p, mylocale);
+#endif
 			}
 			else
 #endif
