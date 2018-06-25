@@ -584,6 +584,22 @@ static struct timezone_to_id timezones[] = {
 	{ "W-SU", "W-SU", 577 },
 	{ "WET", "WET", 578 },
 	{ "Zulu", "ZULU", 579 },
+//NEW FOR PG10/PG11
+	{ "Pacific/Bougainville", "PACIFIC/BOUGAINVILLE", 580},
+	{ "America/Punta_Arenas", "AMERICA/PUNTA_ARENAS", 581},
+	{ "America/Fort_Nelson", "AMERICA/FORT_NELSON", 582},
+	{ "Asia/Atyrau", "ASIA/ATYRAU", 583},
+	{ "Asia/Tomsk", "ASIA/TOMSK", 584},
+	{ "Asia/Chita", "ASIA/CHITA", 585},
+	{ "Asia/Barnaul", "ASIA/BARNAUL", 586},
+	{ "Asia/Yangon", "ASIA/YANGON", 587},
+	{ "Asia/Srednekolymsk", "ASIA/SREDNEKOLYMSK", 588},
+	{ "Asia/Famagusta", "ASIA/FAMAGUSTA", 589},
+	{ "Europe/Ulyanovsk", "EUROPE/ULYANOVSK", 590},
+	{ "Europe/Saratov", "EUROPE/SARATOV", 591},
+	{ "Europe/Kirov", "EUROPE/KIROV", 592},
+	{ "Europe/Astrakhan", "EUROPE/ASTRAKHAN", 593},
+	{ "posixrules", "POSIXRULES", 594},
 };
 
 #define NTIMEZONES (sizeof(timezones)/sizeof(timezones[0]))
