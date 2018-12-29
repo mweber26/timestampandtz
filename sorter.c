@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 struct timezone_to_id {
 	const char *name;
 	const char *nameupper;
@@ -116,9 +120,8 @@ static struct timezone_to_id timezones[] = {
 	{ "America/Eirunepe", "AMERICA/EIRUNEPE", 109 },
 	{ "America/El_Salvador", "AMERICA/EL_SALVADOR", 110 },
 	{ "America/Ensenada", "AMERICA/ENSENADA", 111 },
-	{ "America/Fortaleza", "AMERICA/FORTALEZA", 113 },
-	{ "America/Fort_Nelson", "AMERICA/FORT_NELSON", 582 },
 	{ "America/Fort_Wayne", "AMERICA/FORT_WAYNE", 112 },
+	{ "America/Fortaleza", "AMERICA/FORTALEZA", 113 },
 	{ "America/Glace_Bay", "AMERICA/GLACE_BAY", 114 },
 	{ "America/Godthab", "AMERICA/GODTHAB", 115 },
 	{ "America/Goose_Bay", "AMERICA/GOOSE_BAY", 116 },
@@ -186,11 +189,10 @@ static struct timezone_to_id timezones[] = {
 	{ "America/Paramaribo", "AMERICA/PARAMARIBO", 178 },
 	{ "America/Phoenix", "AMERICA/PHOENIX", 179 },
 	{ "America/Port-au-Prince", "AMERICA/PORT-AU-PRINCE", 180 },
+	{ "America/Port_of_Spain", "AMERICA/PORT_OF_SPAIN", 181 },
 	{ "America/Porto_Acre", "AMERICA/PORTO_ACRE", 182 },
 	{ "America/Porto_Velho", "AMERICA/PORTO_VELHO", 183 },
-	{ "America/Port_of_Spain", "AMERICA/PORT_OF_SPAIN", 181 },
 	{ "America/Puerto_Rico", "AMERICA/PUERTO_RICO", 184 },
-	{ "America/Punta_Arenas", "AMERICA/PUNTA_ARENAS", 581 },
 	{ "America/Rainy_River", "AMERICA/RAINY_RIVER", 185 },
 	{ "America/Rankin_Inlet", "AMERICA/RANKIN_INLET", 186 },
 	{ "America/Recife", "AMERICA/RECIFE", 187 },
@@ -198,8 +200,8 @@ static struct timezone_to_id timezones[] = {
 	{ "America/Resolute", "AMERICA/RESOLUTE", 189 },
 	{ "America/Rio_Branco", "AMERICA/RIO_BRANCO", 190 },
 	{ "America/Rosario", "AMERICA/ROSARIO", 191 },
-	{ "America/Santarem", "AMERICA/SANTAREM", 193 },
 	{ "America/Santa_Isabel", "AMERICA/SANTA_ISABEL", 192 },
+	{ "America/Santarem", "AMERICA/SANTAREM", 193 },
 	{ "America/Santiago", "AMERICA/SANTIAGO", 194 },
 	{ "America/Santo_Domingo", "AMERICA/SANTO_DOMINGO", 195 },
 	{ "America/Sao_Paulo", "AMERICA/SAO_PAULO", 196 },
@@ -246,17 +248,14 @@ static struct timezone_to_id timezones[] = {
 	{ "Asia/Aqtobe", "ASIA/AQTOBE", 237 },
 	{ "Asia/Ashgabat", "ASIA/ASHGABAT", 238 },
 	{ "Asia/Ashkhabad", "ASIA/ASHKHABAD", 239 },
-	{ "Asia/Atyrau", "ASIA/ATYRAU", 583 },
 	{ "Asia/Baghdad", "ASIA/BAGHDAD", 240 },
 	{ "Asia/Bahrain", "ASIA/BAHRAIN", 241 },
 	{ "Asia/Baku", "ASIA/BAKU", 242 },
 	{ "Asia/Bangkok", "ASIA/BANGKOK", 243 },
-	{ "Asia/Barnaul", "ASIA/BARNAUL", 586 },
 	{ "Asia/Beirut", "ASIA/BEIRUT", 244 },
 	{ "Asia/Bishkek", "ASIA/BISHKEK", 245 },
 	{ "Asia/Brunei", "ASIA/BRUNEI", 246 },
 	{ "Asia/Calcutta", "ASIA/CALCUTTA", 247 },
-	{ "Asia/Chita", "ASIA/CHITA", 585 },
 	{ "Asia/Choibalsan", "ASIA/CHOIBALSAN", 248 },
 	{ "Asia/Chongqing", "ASIA/CHONGQING", 249 },
 	{ "Asia/Chungking", "ASIA/CHUNGKING", 250 },
@@ -267,13 +266,12 @@ static struct timezone_to_id timezones[] = {
 	{ "Asia/Dili", "ASIA/DILI", 255 },
 	{ "Asia/Dubai", "ASIA/DUBAI", 256 },
 	{ "Asia/Dushanbe", "ASIA/DUSHANBE", 257 },
-	{ "Asia/Famagusta", "ASIA/FAMAGUSTA", 589 },
 	{ "Asia/Gaza", "ASIA/GAZA", 258 },
 	{ "Asia/Harbin", "ASIA/HARBIN", 259 },
 	{ "Asia/Hebron", "ASIA/HEBRON", 260 },
+	{ "Asia/Ho_Chi_Minh", "ASIA/HO_CHI_MINH", 261 },
 	{ "Asia/Hong_Kong", "ASIA/HONG_KONG", 262 },
 	{ "Asia/Hovd", "ASIA/HOVD", 263 },
-	{ "Asia/Ho_Chi_Minh", "ASIA/HO_CHI_MINH", 261 },
 	{ "Asia/Irkutsk", "ASIA/IRKUTSK", 264 },
 	{ "Asia/Istanbul", "ASIA/ISTANBUL", 265 },
 	{ "Asia/Jakarta", "ASIA/JAKARTA", 266 },
@@ -315,7 +313,6 @@ static struct timezone_to_id timezones[] = {
 	{ "Asia/Seoul", "ASIA/SEOUL", 302 },
 	{ "Asia/Shanghai", "ASIA/SHANGHAI", 303 },
 	{ "Asia/Singapore", "ASIA/SINGAPORE", 304 },
-	{ "Asia/Srednekolymsk", "ASIA/SREDNEKOLYMSK", 588 },
 	{ "Asia/Taipei", "ASIA/TAIPEI", 305 },
 	{ "Asia/Tashkent", "ASIA/TASHKENT", 306 },
 	{ "Asia/Tbilisi", "ASIA/TBILISI", 307 },
@@ -324,7 +321,6 @@ static struct timezone_to_id timezones[] = {
 	{ "Asia/Thimbu", "ASIA/THIMBU", 310 },
 	{ "Asia/Thimphu", "ASIA/THIMPHU", 311 },
 	{ "Asia/Tokyo", "ASIA/TOKYO", 312 },
-	{ "Asia/Tomsk", "ASIA/TOMSK", 584 },
 	{ "Asia/Ujung_Pandang", "ASIA/UJUNG_PANDANG", 313 },
 	{ "Asia/Ulaanbaatar", "ASIA/ULAANBAATAR", 314 },
 	{ "Asia/Ulan_Bator", "ASIA/ULAN_BATOR", 315 },
@@ -333,7 +329,6 @@ static struct timezone_to_id timezones[] = {
 	{ "Asia/Vientiane", "ASIA/VIENTIANE", 318 },
 	{ "Asia/Vladivostok", "ASIA/VLADIVOSTOK", 319 },
 	{ "Asia/Yakutsk", "ASIA/YAKUTSK", 320 },
-	{ "Asia/Yangon", "ASIA/YANGON", 587 },
 	{ "Asia/Yekaterinburg", "ASIA/YEKATERINBURG", 321 },
 	{ "Asia/Yerevan", "ASIA/YEREVAN", 322 },
 	{ "Atlantic/Azores", "ATLANTIC/AZORES", 323 },
@@ -346,8 +341,8 @@ static struct timezone_to_id timezones[] = {
 	{ "Atlantic/Madeira", "ATLANTIC/MADEIRA", 330 },
 	{ "Atlantic/Reykjavik", "ATLANTIC/REYKJAVIK", 331 },
 	{ "Atlantic/South_Georgia", "ATLANTIC/SOUTH_GEORGIA", 332 },
-	{ "Atlantic/Stanley", "ATLANTIC/STANLEY", 334 },
 	{ "Atlantic/St_Helena", "ATLANTIC/ST_HELENA", 333 },
+	{ "Atlantic/Stanley", "ATLANTIC/STANLEY", 334 },
 	{ "Australia/ACT", "AUSTRALIA/ACT", 335 },
 	{ "Australia/Adelaide", "AUSTRALIA/ADELAIDE", 336 },
 	{ "Australia/Brisbane", "AUSTRALIA/BRISBANE", 337 },
@@ -361,8 +356,8 @@ static struct timezone_to_id timezones[] = {
 	{ "Australia/Lindeman", "AUSTRALIA/LINDEMAN", 345 },
 	{ "Australia/Lord_Howe", "AUSTRALIA/LORD_HOWE", 346 },
 	{ "Australia/Melbourne", "AUSTRALIA/MELBOURNE", 347 },
-	{ "Australia/North", "AUSTRALIA/NORTH", 349 },
 	{ "Australia/NSW", "AUSTRALIA/NSW", 348 },
+	{ "Australia/North", "AUSTRALIA/NORTH", 349 },
 	{ "Australia/Perth", "AUSTRALIA/PERTH", 350 },
 	{ "Australia/Queensland", "AUSTRALIA/QUEENSLAND", 351 },
 	{ "Australia/South", "AUSTRALIA/SOUTH", 352 },
@@ -375,6 +370,8 @@ static struct timezone_to_id timezones[] = {
 	{ "Brazil/DeNoronha", "BRAZIL/DENORONHA", 359 },
 	{ "Brazil/East", "BRAZIL/EAST", 360 },
 	{ "Brazil/West", "BRAZIL/WEST", 361 },
+	{ "CET", "CET", 362 },
+	{ "CST6CDT", "CST6CDT", 363 },
 	{ "Canada/Atlantic", "CANADA/ATLANTIC", 364 },
 	{ "Canada/Central", "CANADA/CENTRAL", 365 },
 	{ "Canada/East-Saskatchewan", "CANADA/EAST-SASKATCHEWAN", 366 },
@@ -384,16 +381,14 @@ static struct timezone_to_id timezones[] = {
 	{ "Canada/Pacific", "CANADA/PACIFIC", 370 },
 	{ "Canada/Saskatchewan", "CANADA/SASKATCHEWAN", 371 },
 	{ "Canada/Yukon", "CANADA/YUKON", 372 },
-	{ "CET", "CET", 362 },
 	{ "Chile/Continental", "CHILE/CONTINENTAL", 373 },
 	{ "Chile/EasterIsland", "CHILE/EASTERISLAND", 374 },
-	{ "CST6CDT", "CST6CDT", 363 },
 	{ "Cuba", "CUBA", 375 },
 	{ "EET", "EET", 376 },
-	{ "Egypt", "EGYPT", 379 },
-	{ "Eire", "EIRE", 380 },
 	{ "EST", "EST", 377 },
 	{ "EST5EDT", "EST5EDT", 378 },
+	{ "Egypt", "EGYPT", 379 },
+	{ "Eire", "EIRE", 380 },
 	{ "Etc/GMT", "ETC/GMT", 381 },
 	{ "Etc/GMT+0", "ETC/GMT+0", 382 },
 	{ "Etc/GMT+1", "ETC/GMT+1", 383 },
@@ -426,12 +421,11 @@ static struct timezone_to_id timezones[] = {
 	{ "Etc/GMT0", "ETC/GMT0", 410 },
 	{ "Etc/Greenwich", "ETC/GREENWICH", 411 },
 	{ "Etc/UCT", "ETC/UCT", 412 },
-	{ "Etc/Universal", "ETC/UNIVERSAL", 414 },
 	{ "Etc/UTC", "ETC/UTC", 413 },
+	{ "Etc/Universal", "ETC/UNIVERSAL", 414 },
 	{ "Etc/Zulu", "ETC/ZULU", 415 },
 	{ "Europe/Amsterdam", "EUROPE/AMSTERDAM", 416 },
 	{ "Europe/Andorra", "EUROPE/ANDORRA", 417 },
-	{ "Europe/Astrakhan", "EUROPE/ASTRAKHAN", 593 },
 	{ "Europe/Athens", "EUROPE/ATHENS", 418 },
 	{ "Europe/Belfast", "EUROPE/BELFAST", 419 },
 	{ "Europe/Belgrade", "EUROPE/BELGRADE", 420 },
@@ -452,7 +446,6 @@ static struct timezone_to_id timezones[] = {
 	{ "Europe/Jersey", "EUROPE/JERSEY", 435 },
 	{ "Europe/Kaliningrad", "EUROPE/KALININGRAD", 436 },
 	{ "Europe/Kiev", "EUROPE/KIEV", 437 },
-	{ "Europe/Kirov", "EUROPE/KIROV", 592 },
 	{ "Europe/Lisbon", "EUROPE/LISBON", 438 },
 	{ "Europe/Ljubljana", "EUROPE/LJUBLJANA", 439 },
 	{ "Europe/London", "EUROPE/LONDON", 440 },
@@ -473,7 +466,6 @@ static struct timezone_to_id timezones[] = {
 	{ "Europe/Samara", "EUROPE/SAMARA", 455 },
 	{ "Europe/San_Marino", "EUROPE/SAN_MARINO", 456 },
 	{ "Europe/Sarajevo", "EUROPE/SARAJEVO", 457 },
-	{ "Europe/Saratov", "EUROPE/SARATOV", 591 },
 	{ "Europe/Simferopol", "EUROPE/SIMFEROPOL", 458 },
 	{ "Europe/Skopje", "EUROPE/SKOPJE", 459 },
 	{ "Europe/Sofia", "EUROPE/SOFIA", 460 },
@@ -481,7 +473,6 @@ static struct timezone_to_id timezones[] = {
 	{ "Europe/Tallinn", "EUROPE/TALLINN", 462 },
 	{ "Europe/Tirane", "EUROPE/TIRANE", 463 },
 	{ "Europe/Tiraspol", "EUROPE/TIRASPOL", 464 },
-	{ "Europe/Ulyanovsk", "EUROPE/ULYANOVSK", 590 },
 	{ "Europe/Uzhgorod", "EUROPE/UZHGOROD", 465 },
 	{ "Europe/Vaduz", "EUROPE/VADUZ", 466 },
 	{ "Europe/Vatican", "EUROPE/VATICAN", 467 },
@@ -499,8 +490,8 @@ static struct timezone_to_id timezones[] = {
 	{ "GMT-0", "GMT-0", 479 },
 	{ "GMT0", "GMT0", 480 },
 	{ "Greenwich", "GREENWICH", 481 },
-	{ "Hongkong", "HONGKONG", 483 },
 	{ "HST", "HST", 482 },
+	{ "Hongkong", "HONGKONG", 483 },
 	{ "Iceland", "ICELAND", 484 },
 	{ "Indian/Antananarivo", "INDIAN/ANTANANARIVO", 485 },
 	{ "Indian/Chagos", "INDIAN/CHAGOS", 486 },
@@ -520,17 +511,18 @@ static struct timezone_to_id timezones[] = {
 	{ "Kwajalein", "KWAJALEIN", 500 },
 	{ "Libya", "LIBYA", 501 },
 	{ "MET", "MET", 502 },
+	{ "MST", "MST", 503 },
+	{ "MST7MDT", "MST7MDT", 504 },
 	{ "Mexico/BajaNorte", "MEXICO/BAJANORTE", 505 },
 	{ "Mexico/BajaSur", "MEXICO/BAJASUR", 506 },
 	{ "Mexico/General", "MEXICO/GENERAL", 507 },
-	{ "MST", "MST", 503 },
-	{ "MST7MDT", "MST7MDT", 504 },
-	{ "Navajo", "NAVAJO", 510 },
 	{ "NZ", "NZ", 508 },
 	{ "NZ-CHAT", "NZ-CHAT", 509 },
+	{ "Navajo", "NAVAJO", 510 },
+	{ "PRC", "PRC", 511 },
+	{ "PST8PDT", "PST8PDT", 512 },
 	{ "Pacific/Apia", "PACIFIC/APIA", 513 },
 	{ "Pacific/Auckland", "PACIFIC/AUCKLAND", 514 },
-	{ "Pacific/Bougainville", "PACIFIC/BOUGAINVILLE", 580 },
 	{ "Pacific/Chatham", "PACIFIC/CHATHAM", 515 },
 	{ "Pacific/Chuuk", "PACIFIC/CHUUK", 516 },
 	{ "Pacific/Easter", "PACIFIC/EASTER", 517 },
@@ -573,15 +565,11 @@ static struct timezone_to_id timezones[] = {
 	{ "Pacific/Yap", "PACIFIC/YAP", 554 },
 	{ "Poland", "POLAND", 555 },
 	{ "Portugal", "PORTUGAL", 556 },
-	{ "posixrules", "POSIXRULES", 594 },
-	{ "PRC", "PRC", 511 },
-	{ "PST8PDT", "PST8PDT", 512 },
 	{ "ROC", "ROC", 557 },
 	{ "ROK", "ROK", 558 },
 	{ "Singapore", "SINGAPORE", 559 },
 	{ "Turkey", "TURKEY", 560 },
 	{ "UCT", "UCT", 561 },
-	{ "Universal", "UNIVERSAL", 576 },
 	{ "US/Alaska", "US/ALASKA", 562 },
 	{ "US/Aleutian", "US/ALEUTIAN", 563 },
 	{ "US/Arizona", "US/ARIZONA", 564 },
@@ -596,46 +584,56 @@ static struct timezone_to_id timezones[] = {
 	{ "US/Pacific-New", "US/PACIFIC-NEW", 573 },
 	{ "US/Samoa", "US/SAMOA", 574 },
 	{ "UTC", "UTC", 575 },
+	{ "Universal", "UNIVERSAL", 576 },
 	{ "W-SU", "W-SU", 577 },
 	{ "WET", "WET", 578 },
 	{ "Zulu", "ZULU", 579 },
+//NEW FOR PG10/PG11
+	{ "Pacific/Bougainville", "PACIFIC/BOUGAINVILLE", 580},
+	{ "America/Punta_Arenas", "AMERICA/PUNTA_ARENAS", 581},
+	{ "America/Fort_Nelson", "AMERICA/FORT_NELSON", 582},
+	{ "Asia/Atyrau", "ASIA/ATYRAU", 583},
+	{ "Asia/Tomsk", "ASIA/TOMSK", 584},
+	{ "Asia/Chita", "ASIA/CHITA", 585},
+	{ "Asia/Barnaul", "ASIA/BARNAUL", 586},
+	{ "Asia/Yangon", "ASIA/YANGON", 587},
+	{ "Asia/Srednekolymsk", "ASIA/SREDNEKOLYMSK", 588},
+	{ "Asia/Famagusta", "ASIA/FAMAGUSTA", 589},
+	{ "Europe/Ulyanovsk", "EUROPE/ULYANOVSK", 590},
+	{ "Europe/Saratov", "EUROPE/SARATOV", 591},
+	{ "Europe/Kirov", "EUROPE/KIROV", 592},
+	{ "Europe/Astrakhan", "EUROPE/ASTRAKHAN", 593},
+	{ "posixrules", "POSIXRULES", 594},
 };
 
-#define NTIMEZONES (sizeof(timezones)/sizeof(timezones[0]))
-
-static const char *tzid_to_tzname(int id)
+int string_compare(const void *a, const void *b)
 {
-	return timezones[id - 1].name;
+	const char **sa = (const char **)a;
+	const char **sb = (const char **)b;
+	return strcmp(*sa, *sb);
 }
 
-static int tzname_to_tzid(const char *name)
+int main(void)
 {
-	char uppername[TZ_STRLEN_MAX + 1] = {0};
-	char *p;
-	int first, last, middle;
+	const char *zone_names[594] = { 0 };
+	for(int i = 0; i < 594; i++)
+		zone_names[i] = timezones[i].nameupper;
 
-	p = uppername;
-	while (*name)
-		*p++ = pg_toupper((unsigned char) *name++);
-	*p = '\0';
+	qsort(zone_names, 594, sizeof(const char *), string_compare);
 
-	first = 0;
-	last = NTIMEZONES - 1;
-	middle = (first + last) / 2;
-
-	while(first <= last)
+	printf("static struct timezone_to_id timezones[] = {\n");
+	for(int i = 0; i < 594; i++)
 	{
-		int cmp = strcmp(timezones[middle].nameupper, uppername);
-
-		if(cmp < 0)
-			first = middle + 1;
-		else if(cmp == 0)
-			return timezones[middle].id;
-		else
-			last = middle - 1;
-
-		middle = (first + last) / 2;
+		//find the entry in sort order
+		for(int j = 0; j < 594; j++)
+		{
+			if(strcmp(timezones[j].nameupper, zone_names[i]) == 0)
+			{
+				printf("\t{ \"%s\", \"%s\", %d },\n", timezones[j].name, timezones[j].nameupper, timezones[j].id);
+				break;
+			}
+		}
 	}
-
+	printf("};\n");
 	return 0;
 }
