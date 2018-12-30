@@ -615,6 +615,7 @@ int string_compare(const void *a, const void *b)
 
 int main(void)
 {
+	int zone_to_id[594];
 	const char *zone_names[594] = { 0 };
 	for(int i = 0; i < 594; i++)
 		zone_names[i] = timezones[i].nameupper;
@@ -630,10 +631,19 @@ int main(void)
 			if(strcmp(timezones[j].nameupper, zone_names[i]) == 0)
 			{
 				printf("\t{ \"%s\", \"%s\", %d },\n", timezones[j].name, timezones[j].nameupper, timezones[j].id);
+				zone_to_id[j] = i;
 				break;
 			}
 		}
 	}
 	printf("};\n");
+
+	printf("static const struct timezone_to_id *timezones_by_id[] = {\n");
+	for(int i = 0; i < 594; i++)
+	{
+		printf("\t&timezones[%d],\n", zone_to_id[i]);
+	}
+	printf("};\n");
+
 	return 0;
 }
