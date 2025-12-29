@@ -138,73 +138,6 @@ static char *anytimestamp_typmodout(int32 typmod)
 		return "";
 }
 
-static void AdjustTimestampForTypmod(Timestamp *time, int32 typmod)
-{
-#ifdef HAVE_INT64_TIMESTAMP
-	static const int64 TimestampScales[MAX_TIMESTAMP_PRECISION + 1] = {
-		INT64CONST(1000000),
-		INT64CONST(100000),
-		INT64CONST(10000),
-		INT64CONST(1000),
-		INT64CONST(100),
-		INT64CONST(10),
-		INT64CONST(1)
-	};
-
-	static const int64 TimestampOffsets[MAX_TIMESTAMP_PRECISION + 1] = {
-		INT64CONST(500000),
-		INT64CONST(50000),
-		INT64CONST(5000),
-		INT64CONST(500),
-		INT64CONST(50),
-		INT64CONST(5),
-		INT64CONST(0)
-	};
-#else
-	static const double TimestampScales[MAX_TIMESTAMP_PRECISION + 1] = {
-		1,
-		10,
-		100,
-		1000,
-		10000,
-		100000,
-		1000000
-	};
-#endif
-
-	if (!TIMESTAMP_NOT_FINITE(*time)
-		&& (typmod != -1) && (typmod != MAX_TIMESTAMP_PRECISION))
-	{
-		if (typmod < 0 || typmod > MAX_TIMESTAMP_PRECISION)
-			ereport(ERROR,
-					(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-				  errmsg("timestamp(%d) precision must be between %d and %d",
-						 typmod, 0, MAX_TIMESTAMP_PRECISION)));
-
-		/*
-		 * Note: this round-to-nearest code is not completely consistent about
-		 * rounding values that are exactly halfway between integral values.
-		 * On most platforms, rint() will implement round-to-nearest-even, but
-		 * the integer code always rounds up (away from zero).  Is it worth
-		 * trying to be consistent?
-		 */
-#ifdef HAVE_INT64_TIMESTAMP
-		if (*time >= INT64CONST(0))
-		{
-			*time = ((*time + TimestampOffsets[typmod]) / TimestampScales[typmod]) *
-				TimestampScales[typmod];
-		}
-		else
-		{
-			*time = -((((-*time) + TimestampOffsets[typmod]) / TimestampScales[typmod])
-					  * TimestampScales[typmod]);
-		}
-#else
-		*time = rint((double) *time * TimestampScales[typmod]) / TimestampScales[typmod];
-#endif
-	}
-}
-
 static Datum gen_timestamp(Timestamp stamp, int tz)
 {
 	TimestampAndTz *result = (TimestampAndTz *) palloc0(sizeof(TimestampAndTz));
@@ -264,6 +197,7 @@ Datum timestampandtz_in(PG_FUNCTION_ARGS)
 	char *tzn;
 	int tzid;
 	int tz_index;
+	DateTimeErrorExtra extra;
 
 	tz_index = strcspn(str, "@");
 	if(tz_index < strlen(str))
@@ -300,9 +234,9 @@ Datum timestampandtz_in(PG_FUNCTION_ARGS)
 	/* standard date/time parse */
 	dterr = ParseDateTime(str, workbuf, sizeof(workbuf), field, ftype, MAXDATEFIELDS, &nf);
 	if(dterr == 0)
-		dterr = DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tz);
+		dterr = DecodeDateTime(field, ftype, nf, &dtype, tm, &fsec, &tz, &extra);
 	if(dterr != 0)
-		DateTimeParseError(dterr, str, "timestamp and time zone");
+		DateTimeParseError(dterr, &extra, str, "timestamp and time zone", NULL);
 
 	/* set the timezone and determine the offset for the parsed date time (which is local time) */
 	tzp = pg_tzset(tzn);
@@ -329,20 +263,13 @@ Datum timestampandtz_in(PG_FUNCTION_ARGS)
 			TIMESTAMP_NOBEGIN(timestamp);
 			break;
 
-		case DTK_INVALID:
-			ereport(ERROR,
-				(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-				errmsg("date/time value \"%s\" is no longer supported", str)));
-			TIMESTAMP_NOEND(timestamp);
-			break;
-
 		default:
 			elog(ERROR, "unexpected dtype %d while parsing timestampandtz \"%s\"",
 				dtype, str);
 			TIMESTAMP_NOEND(timestamp);
 	}
 
-	AdjustTimestampForTypmod(&timestamp, typmod);
+	AdjustTimestampForTypmod(&timestamp, typmod, NULL);
 	return gen_timestamp(timestamp, tzid);
 }
 
@@ -392,7 +319,7 @@ Datum timestampandtz_recv(PG_FUNCTION_ARGS)
 	result->time = pq_getmsgint64(buf);
 	result->tz = pq_getmsgint(buf, 2);
 
-	AdjustTimestampForTypmod(&result->time, typmod);
+	AdjustTimestampForTypmod(&result->time, typmod, NULL);
 	PG_RETURN_POINTER(result);
 }
 
@@ -432,7 +359,7 @@ Datum timestampandtz_scale(PG_FUNCTION_ARGS)
 
 	result = arg->time;
 
-	AdjustTimestampForTypmod(&result, typmod);
+	AdjustTimestampForTypmod(&result, typmod, NULL);
 	return gen_timestamp(result, arg->tz);
 }
 
