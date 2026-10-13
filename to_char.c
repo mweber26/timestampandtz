@@ -2876,6 +2876,8 @@ Datum timestampandtz_to_char(PG_FUNCTION_ARGS)
 				(errcode(ERRCODE_DATETIME_VALUE_OUT_OF_RANGE),
 				 errmsg("timestamp out of range")));
 
+	COPY_tm(tm, &tt);
+
 	thisdate = date2j(tm->tm_year, tm->tm_mon, tm->tm_mday);
 	tm->tm_wday = (thisdate + 1) % 7;
 	tm->tm_yday = thisdate - date2j(tm->tm_year, 1, 1) + 1;
